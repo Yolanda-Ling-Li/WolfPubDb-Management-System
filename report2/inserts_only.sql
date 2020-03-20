@@ -55,9 +55,9 @@ INSERT INTO `Author_write_Books` (`person_id`, `pub_id`) VALUES
 /*!40000 ALTER TABLE `Books` DISABLE KEYS */;
 INSERT INTO `Books` (`pub_id`, `edition`, `ISBN`, `topic`) VALUES
 	(1, 1, '123', NULL),
-	(2, 1, '123', NULL),
-	(3, 1, '123', NULL),
-	(4, 1, '123', NULL);
+	(2, 1, '234', NULL),
+	(3, 1, '345', NULL),
+	(4, 1, '456', 'topic1');
 /*!40000 ALTER TABLE `Books` ENABLE KEYS */;
 
 -- Dumping data for table zli58.Distributors: ~4 rows (approximately)
