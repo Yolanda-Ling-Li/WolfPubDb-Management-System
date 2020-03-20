@@ -33,14 +33,14 @@ INSERT INTO `Authors` (`person_id`, `type`) VALUES
 	(10, 'invited');
 /*!40000 ALTER TABLE `Authors` ENABLE KEYS */;
 
--- Dumping data for table zli58.Author_write_articles_or_chapters: ~4 rows (approximately)
-/*!40000 ALTER TABLE `Author_write_articles_or_chapters` DISABLE KEYS */;
-INSERT INTO `Author_write_articles_or_chapters` (`person_id`, `art_id`, `pub_id`) VALUES
+-- Dumping data for table zli58.Author_write_Articles_or_Chapters: ~4 rows (approximately)
+/*!40000 ALTER TABLE `Author_write_Articles_or_Chapters` DISABLE KEYS */;
+INSERT INTO `Author_write_Articles_or_Chapters` (`person_id`, `art_id`, `pub_id`) VALUES
 	(2, 1, 1),
 	(2, 2, 1),
 	(2, 3, 2),
 	(2, 4, 2);
-/*!40000 ALTER TABLE `Author_write_articles_or_chapters` ENABLE KEYS */;
+/*!40000 ALTER TABLE `Author_write_Articles_or_Chapters` ENABLE KEYS */;
 
 -- Dumping data for table zli58.Author_write_Books: ~4 rows (approximately)
 /*!40000 ALTER TABLE `Author_write_Books` DISABLE KEYS */;

@@ -38,18 +38,18 @@ CREATE TABLE IF NOT EXISTS `Authors` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table zli58.Author_write_articles_or_chapters
-DROP TABLE IF EXISTS `Author_write_articles_or_chapters`;
-CREATE TABLE IF NOT EXISTS `Author_write_articles_or_chapters` (
+-- Dumping structure for table zli58.Author_write_Articles_or_Chapters
+DROP TABLE IF EXISTS `Author_write_Articles_or_Chapters`;
+CREATE TABLE IF NOT EXISTS `Author_write_Articles_or_Chapters` (
   `person_id` int(11) NOT NULL,
   `art_id` int(11) NOT NULL,
   `pub_id` int(11) NOT NULL,
   PRIMARY KEY (`person_id`,`art_id`),
   KEY `art_id` (`art_id`),
-  KEY `FK_Author_write_articles_or_chapters_Publications` (`pub_id`),
-  CONSTRAINT `FK_Author_write_articles_or_chapters_Publications` FOREIGN KEY (`pub_id`) REFERENCES `Publications` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Author_write_articles_or_chapters_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `Authors` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Author_write_articles_or_chapters_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `Articles_Chapters` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `FK_Author_write_Articles_or_Chapters_Publications` (`pub_id`),
+  CONSTRAINT `FK_Author_write_Articles_or_Chapters_Publications` FOREIGN KEY (`pub_id`) REFERENCES `Publications` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Author_write_Articles_or_Chapters_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `Authors` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Author_write_Articles_or_Chapters_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `Articles_Chapters` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
