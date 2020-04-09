@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `Persons` (
   `name` varchar(128) NOT NULL,
   `gender` varchar(8),
   `age` int(11),
-  `email` varchar(8),
+  `email` varchar(128),
   `phone_num` varchar(20),
   `address` varchar(128),
   PRIMARY KEY (`person_id`)
