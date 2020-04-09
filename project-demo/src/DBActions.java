@@ -54,6 +54,178 @@ public class DBActions {
 		statement = connection.createStatement();
 	}
 	 
+	
+	public static void addPublication(String title, String date) {
+		try {
+			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewPublication(int person_id) {
+		try {
+			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addArticleToPublication(String date, String text, String title, String topic, int pub_id) {
+		try {
+			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES(NULL,'" + date + "', '" + text + "', '" + title + "', '" + topic + "'," + pub_id + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void deleteArticleToPublication(int art_id) {
+		try {
+			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addBook(String title, String date, int edition, String ISBN) {
+		try {
+			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
+			statement.executeUpdate("INSERT INTO Books VALUES(LAST_INSERT_ID()," + edition + ",'" + ISBN + "', NULL)");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addIssue(int pub_id, String title, String date, int period_id) {
+		try {
+			statement.executeUpdate("INSERT INTO Publications VALUES(" + pub_id + ", '" + title + "', '" + date + "')");
+			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void updateBook(int pub_id, Integer edition, String ISBN, String topic) {
+		try {
+			if (edition != null) {
+				statement.executeUpdate("UPDATE Books SET edition=" + edition + "WHERE pub_id=" + pub_id);
+			}
+			if (ISBN != null) {
+				statement.executeUpdate("UPDATE Books SET ISBN='" + ISBN + "' WHERE pub_id=" + pub_id);
+			}
+			if (topic != null) {
+				statement.executeUpdate("UPDATE Books SET topic=" + topic + "WHERE pub_id=" + pub_id);
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void deleteBook(int pub_id) {
+		try {
+			statement.executeUpdate("DELETE FROM Books WHERE pub_id=" + pub_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void updatePublication(int pub_id, String title, String date) {
+		try {
+			if (title != null) {
+				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
+			}
+			if (date != null) {
+				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void updateArticleOrChapter(int art_id, String title, String text, String topic, String date) {
+		try {
+			if (title != null) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
+			}
+			if (text != null) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET text='" + text + "' WHERE art_id=" + art_id);
+			}
+			if (topic != null) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET topic='" + topic + "' WHERE art_id=" + art_id);
+			}
+			if (date != null) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void updatePerson(int person_id, String name, String type, String gender, Integer age, String email, String phone_num, String address) {
+		try {
+			if (name != null) {
+				statement.executeUpdate("UPDATE Persons SET name='" + name + "' WHERE person_id=" + person_id);
+			}
+			if (type != null) {
+				statement.executeUpdate("UPDATE Persons SET type='" + type + "' WHERE person_id=" + person_id);
+			}
+			if (gender != null) {
+				statement.executeUpdate("UPDATE Persons SET gender='" + gender + "' WHERE person_id=" + person_id);
+			}
+			if (age != null) {
+				statement.executeUpdate("UPDATE Persons SET age='" + age + "' WHERE person_id=" + person_id);
+			}
+			if (email != null) {
+				statement.executeUpdate("UPDATE Persons SET email='" + email + "' WHERE person_id=" + person_id);
+			}
+			if (phone_num != null) {
+				statement.executeUpdate("UPDATE Persons SET phone_num='" + phone_num + "' WHERE person_id=" + person_id);
+			}
+			if (address != null) {
+				statement.executeUpdate("UPDATE Persons SET address='" + address + "' WHERE person_id=" + person_id);
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void searchForBooks(String topic, String date, String authorName) throws SQLException {
+		try {
+			if (topic != null) {
+				result = statement.executeQuery("SELECT * FROM Books WHERE topic='" + topic + "'");
+			} 
+			if (date != null) {
+				result = statement.executeQuery("SELECT * FROM Books WHERE date='" + date + "'");
+			}
+			if (authorName != null) {
+				result = statement.executeQuery("SELECT * FROM Author_write_books WHERE person_id='" + authorName + "'");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		while (result.next()) {
+			System.out.println();
+		}
+	}
+
+	public static void searchArticles(int art_id, String title, String text, String topic, String date) throws SQLException {
+		try {
+			statement.executeUpdate("SELECT * FROM Articles_Chapters WHERE topic='topic1'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		while (result.next()) {
+			System.out.println();
+		}
+	}
+	
+	public static void addPayment(int pay_id, String date, String type, float amount, String person_id) {
+		try {
+			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, '" + date + "', '" + type + "', " + amount + ", " + person_id +")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private static void enterNewDistributor(int person_id, String name, String type, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
