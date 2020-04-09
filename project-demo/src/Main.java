@@ -60,12 +60,16 @@ public class Main {
 		int selectedTask = scanner.nextInt();
 //		System.out.println(selectedTask);
 		
+		System.out.println("Your task: " + tasks.get(selectedOperation - 1).get(selectedTask - 1));
+		
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
 				System.out.println("title: ");
 				String title = scanner.next();
 				System.out.println("date: ");
 				String date = scanner.next();
+				
+				System.out.println(title + " " + date);
 			}
 			if (selectedTask == 2) {
 				
@@ -131,6 +135,8 @@ public class Main {
 				
 			}
 		}
+		
+		scanner.close();
 		
 	}
 
