@@ -239,15 +239,26 @@ public class DBActions {
 
 	public static void enterNewDistributor(String type, String name, String gender, Integer age, String email, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, '%s', '%s', '%s', %d, '%s', '%s', '%s');", type, name, gender, age, email, phone_num, address));
 			statement.executeUpdate(String.format("INSERT INTO Distributors VALUES (LAST_INSERT_ID(), %f, '%s', '%s', '%s');", balance, contact_person, d_type, city));
+			connection.commit();
+			connection.setAutoCommit(true); 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
 	public static void updateDistributor(int person_id, String name, String gender, String age, String email, String balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
+			connection.setAutoCommit(false);
 			if (!name.equals("")) {
 				statement.executeUpdate(String.format("UPDATE Persons SET name = '%s' WHERE person_id =%d;", name, person_id));
 			}
@@ -278,15 +289,23 @@ public class DBActions {
 			if (!city.equals("")) {
 				statement.executeUpdate(String.format("UPDATE Distributors SET city = '%s' WHERE person_id =%d;", city, person_id));
 			}
+			connection.commit();
+			connection.setAutoCommit(true); 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
 	public static void deleteDistributor(int person_id){
 		try {
 			statement.executeUpdate(String.format("DELETE FROM Persons WHERE person_id=%d;", person_id));
-			statement.executeUpdate(String.format("DELETE FROM Distributors WHERE person_id=%d;", person_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
