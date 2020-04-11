@@ -1,10 +1,8 @@
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBActions {
 	static final String jdbcURL = "jdbc:mariadb://karlm3.hopto.org:3306/csc540demo";
@@ -53,6 +51,28 @@ public class DBActions {
 		connection = DriverManager.getConnection(jdbcURL, user, password);
 		statement = connection.createStatement();
 	}
+
+	private static void printResultSet(ResultSet rs) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			for (int i = 1; i <= columnsNumber; i++) {
+				if (i > 1) System.out.print(" | ");
+				System.out.print(rsmd.getColumnName(i));
+			}
+			System.out.println("\n- - - - - - - - - - - - - - - - - - - - - - - -");
+			while (rs.next()) {
+				for (int i = 1; i <= columnsNumber; i++) {
+					if (i > 1) System.out.print(" | ");
+					String columnValue = rs.getString(i);
+					System.out.print(columnValue);
+				}
+				System.out.println();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	 
 	
 	public static void addPublication(String title, String date) {
@@ -66,6 +86,50 @@ public class DBActions {
 	public static void viewPublication(int person_id) {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewPeriodicals() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Periodicals");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewBooks() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Books NATURAL JOIN Publications");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewIssues() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Issues NATURAL JOIN Publications NATURAL JOIN Periodicals");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewArticlesChapters() {
+		try {
+			result = statement.executeQuery("SELECT art_id, title, name AS author_name, topic, date, text FROM Articles_Chapters NATURAL JOIN Author_write_Articles_or_Chapters NATURAL JOIN Persons");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addPeriodical(String type, String periodicity, String topic) {
+		try {
+			statement.executeUpdate("INSERT INTO Periodicals VALUES(NULL,'" + type + "', '" + periodicity + "', '" + topic + "')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -87,43 +151,71 @@ public class DBActions {
 		}
 	}
 	
-	public static void addBook(String title, String date, int edition, String ISBN) {
+	public static void addBook(String title, String date, String edition, String ISBN, String topic) {
 		try {
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
-			statement.executeUpdate("INSERT INTO Books VALUES(LAST_INSERT_ID()," + edition + ",'" + ISBN + "', NULL)");
+			statement.executeUpdate("INSERT INTO Books VALUES(LAST_INSERT_ID()," + edition + ",'" + ISBN + "', '" + topic + "')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void addIssue(int pub_id, String title, String date, int period_id) {
+	public static void addIssue(String title, String date, String period_id) {
 		try {
-			statement.executeUpdate("INSERT INTO Publications VALUES(" + pub_id + ", '" + title + "', '" + date + "')");
+			statement.executeUpdate("INSERT INTO Publications VALUES(NULL, '" + title + "', '" + date + "')");
 			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void updateBook(int pub_id, Integer edition, String ISBN, String topic) {
+	public static void updateBook(String pub_id, String edition, String ISBN, String topic, String title, String date) {
 		try {
-			if (edition != null) {
-				statement.executeUpdate("UPDATE Books SET edition=" + edition + "WHERE pub_id=" + pub_id);
+			if (!edition.equals("")) {
+				statement.executeUpdate("UPDATE Books SET edition=" + edition + " WHERE pub_id=" + pub_id);
 			}
-			if (ISBN != null) {
+			if (!ISBN.equals("")) {
 				statement.executeUpdate("UPDATE Books SET ISBN='" + ISBN + "' WHERE pub_id=" + pub_id);
 			}
-			if (topic != null) {
-				statement.executeUpdate("UPDATE Books SET topic=" + topic + "WHERE pub_id=" + pub_id);
-			}			
+			if (!topic.equals("")) {
+				statement.executeUpdate("UPDATE Books SET topic='" + topic + "' WHERE pub_id=" + pub_id);
+			}
+			if (!title.equals("")) {
+				statement.executeUpdate("UPDATE Publications SET title='" + topic + "' WHERE pub_id=" + pub_id);
+			}
+			if (!date.equals("")) {
+				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
+			}
+			} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void updateIssue(String pub_id, String title, String date, String type, String periodicity, String topic) {
+		try {
+			if (!title.equals("")) {
+				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
+			}
+			if (!date.equals("")) {
+				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
+			}
+			if (!type.equals("")) {
+				statement.executeUpdate("UPDATE Periodicals SET type='" + type + "' WHERE period_id=(SELECT period_id FROM Issues WHERE pub_id=" + pub_id + ")");
+			}
+			if (!periodicity.equals("")) {
+				statement.executeUpdate("UPDATE Periodicals SET periodicity='" + periodicity + "' WHERE period_id=(SELECT period_id FROM Issues WHERE pub_id=" + pub_id + ")");
+			}
+			if (!topic.equals("")) {
+				statement.executeUpdate("UPDATE Periodicals SET topic='" + topic + "' WHERE period_id=(SELECT period_id FROM Issues WHERE pub_id=" + pub_id + ")");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void deleteBook(int pub_id) {
+
+	public static void deletePublication(String pub_id) {
 		try {
-			statement.executeUpdate("DELETE FROM Books WHERE pub_id=" + pub_id);
+			statement.executeUpdate("DELETE FROM Publications WHERE pub_id=" + pub_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -189,33 +281,51 @@ public class DBActions {
 		}
 	}
 	
-	public static void searchForBooks(String topic, String date, String authorName) throws SQLException {
+	public static void searchBooks(String topic, String date, String authorName) {
+		List<String> search = new ArrayList<String>();
+
+		if (!topic.equals("")) {
+			search.add("topic LIKE '%" + topic + "%'");
+		}
+		if (!date.equals("")) {
+			search.add("date='" + date + "'");
+		}
+		if (!authorName.equals("")) {
+			search.add("name LIKE '%" + authorName + "%'");
+		}
 		try {
-			if (topic != null) {
-				result = statement.executeQuery("SELECT * FROM Books WHERE topic='" + topic + "'");
-			} 
-			if (date != null) {
-				result = statement.executeQuery("SELECT * FROM Books WHERE date='" + date + "'");
-			}
-			if (authorName != null) {
-				result = statement.executeQuery("SELECT * FROM Author_write_books WHERE person_id='" + authorName + "'");
-			}
+			String query = "SELECT title, edition, ISBN, date, topic, name AS author_name FROM Books NATURAL JOIN " +
+					"Publications NATURAL JOIN Author_write_Books NATURAL JOIN Persons";
+			if (search.size() > 0)
+				query += " WHERE " + String.join(" AND ", search);
+			result = statement.executeQuery(query);
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		while (result.next()) {
-			System.out.println();
 		}
 	}
 
-	public static void searchArticles(int art_id, String title, String text, String topic, String date) throws SQLException {
+	public static void searchArticles(String topic, String date, String authorName){
+		List<String> search = new ArrayList<String>();
+
+		if (!topic.equals("")) {
+			search.add("topic LIKE '%" + topic + "%'");
+		}
+		if (!date.equals("")) {
+			search.add("date='" + date + "'");
+		}
+		if (!authorName.equals("")) {
+			search.add("name LIKE '%" + authorName + "%'");
+		}
 		try {
-			statement.executeUpdate("SELECT * FROM Articles_Chapters WHERE topic='topic1'");
+			String query = "SELECT title, date, topic, text, name AS author_name FROM Articles_Chapters NATURAL JOIN " +
+					"Author_write_Articles_or_Chapters NATURAL JOIN Persons";
+			if (search.size() > 0)
+				query += " WHERE " + String.join(" AND ", search);
+			result = statement.executeQuery(query);
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		while (result.next()) {
-			System.out.println();
 		}
 	}
 	
