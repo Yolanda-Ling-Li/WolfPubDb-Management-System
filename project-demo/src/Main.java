@@ -52,12 +52,12 @@ public class Main {
 			System.out.println((i + 1) + ". " + operations.get(i));
 		}
 		Scanner scanner = new Scanner(System.in);
-		int selectedOperation = scanner.nextInt();
+		int selectedOperation = Integer.parseInt(scanner.nextLine());
 		System.out.println("Select task:");
 		for (int i = 0; i < tasks.get(selectedOperation - 1).size(); i++) {
 			System.out.println((i + 1) + ". " + tasks.get(selectedOperation - 1).get(i));
 		}
-		int selectedTask = scanner.nextInt();
+		int selectedTask = Integer.parseInt(scanner.nextLine());
 //		System.out.println(selectedTask);
 		
 		System.out.println("Your task: " + tasks.get(selectedOperation - 1).get(selectedTask - 1));
@@ -65,52 +65,52 @@ public class Main {
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
 				System.out.println("title: ");
-				String title = scanner.next();
+				String title = scanner.nextLine();
 				System.out.println("date: ");
-				String date = scanner.next();
+				String date = scanner.nextLine();
 				
 				DBActions.addPublication(title, date);
 				
 			}
 			if (selectedTask == 2) {
 				System.out.println("person_id: ");
-				int person_id = scanner.nextInt();
+				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("Select the field you want to update 1. name 2. type 3. gender 4. age 5. email 6. phone_num 7. address");
-				int selectedField = scanner.nextInt();
+				int selectedField = Integer.parseInt(scanner.nextLine());
 				switch(selectedField) {
 				case 1:
 					System.out.println("name: ");
-					String name = scanner.next();
+					String name = scanner.nextLine();
 					DBActions.updatePerson(person_id, name, null, null, null, null, null, null);
 					break;
 				case 2:
 					System.out.println("type: ");
-					String type = scanner.next();
+					String type = scanner.nextLine();
 					DBActions.updatePerson(person_id, null, type, null, null, null, null, null);
 					break;
 				case 3:
 					System.out.println("gender: ");
-					String gender = scanner.next();
+					String gender = scanner.nextLine();
 					DBActions.updatePerson(person_id, null, null, gender, null, null, null, null);
 					break;
 				case 4: 
 					System.out.println("age: ");
-					int age = scanner.nextInt();
+					int age = Integer.parseInt(scanner.nextLine());
 					DBActions.updatePerson(person_id, null, null, null, age, null, null, null);
 					break;
 				case 5:
 					System.out.println("email: ");
-					String email = scanner.next();
+					String email = scanner.nextLine();
 					DBActions.updatePerson(person_id, null, null, null, null, email, null, null);
 					break;
 				case 6:
 					System.out.println("phone No.: ");
-					String phoneNo = scanner.next();
+					String phoneNo = scanner.nextLine();
 					DBActions.updatePerson(person_id, null, null, null, null, null, phoneNo, null);
 					break;			
 				case 7:
 					System.out.println("address");
-					String address = scanner.next();
+					String address = scanner.nextLine();
 					DBActions.updatePerson(person_id, null, null, null, null, null, null, address);
 					break;			
 					
@@ -118,27 +118,27 @@ public class Main {
 			}
 			if (selectedTask == 3) {
 				System.out.println("person_id:");
-				int person_id = scanner.nextInt();
+				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("pub_id:");
-				int pub_id = scanner.nextInt();
+				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.assignEditorToPublication(person_id, pub_id);
 			}
 			if (selectedTask == 4) {
 				System.out.println("person_id:");
-				int person_id = scanner.nextInt();
+				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.viewPublication(person_id);
 			}
 			if (selectedTask == 5) {
 				System.out.println("date: ");
-				String date = scanner.next();
+				String date = scanner.nextLine();
 				System.out.println("text: ");
-				String text = scanner.next();
+				String text = scanner.nextLine();
 				System.out.println("title: ");
-				String title = scanner.next();
+				String title = scanner.nextLine();
 				System.out.println("topic: ");
-				String topic = scanner.next();
+				String topic = scanner.nextLine();
 				System.out.println("pub_id: ");
-				int pub_id = scanner.nextInt();
+				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.addArticleToPublication(date, text, title, topic, pub_id);
 			}
 		}
