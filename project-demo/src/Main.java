@@ -69,16 +69,77 @@ public class Main {
 				System.out.println("date: ");
 				String date = scanner.next();
 				
-				System.out.println(title + " " + date);
+				DBActions.addPublication(title, date);
+				
 			}
 			if (selectedTask == 2) {
-				
+				System.out.println("person_id: ");
+				int person_id = scanner.nextInt();
+				System.out.println("Select the field you want to update 1. name 2. type 3. gender 4. age 5. email 6. phone_num 7. address");
+				int selectedField = scanner.nextInt();
+				switch(selectedField) {
+				case 1:
+					System.out.println("name: ");
+					String name = scanner.next();
+					DBActions.updatePerson(person_id, name, null, null, null, null, null, null);
+					break;
+				case 2:
+					System.out.println("type: ");
+					String type = scanner.next();
+					DBActions.updatePerson(person_id, null, type, null, null, null, null, null);
+					break;
+				case 3:
+					System.out.println("gender: ");
+					String gender = scanner.next();
+					DBActions.updatePerson(person_id, null, null, gender, null, null, null, null);
+					break;
+				case 4: 
+					System.out.println("age: ");
+					int age = scanner.nextInt();
+					DBActions.updatePerson(person_id, null, null, null, age, null, null, null);
+					break;
+				case 5:
+					System.out.println("email: ");
+					String email = scanner.next();
+					DBActions.updatePerson(person_id, null, null, null, null, email, null, null);
+					break;
+				case 6:
+					System.out.println("phone No.: ");
+					String phoneNo = scanner.next();
+					DBActions.updatePerson(person_id, null, null, null, null, null, phoneNo, null);
+					break;			
+				case 7:
+					System.out.println("address");
+					String address = scanner.next();
+					DBActions.updatePerson(person_id, null, null, null, null, null, null, address);
+					break;			
+					
+				}
 			}
 			if (selectedTask == 3) {
-				
+				System.out.println("person_id:");
+				int person_id = scanner.nextInt();
+				System.out.println("pub_id:");
+				int pub_id = scanner.nextInt();
+				DBActions.assignEditorToPublication(person_id, pub_id);
 			}
 			if (selectedTask == 4) {
-				
+				System.out.println("person_id:");
+				int person_id = scanner.nextInt();
+				DBActions.viewPublication(person_id);
+			}
+			if (selectedTask == 5) {
+				System.out.println("date: ");
+				String date = scanner.next();
+				System.out.println("text: ");
+				String text = scanner.next();
+				System.out.println("title: ");
+				String title = scanner.next();
+				System.out.println("topic: ");
+				String topic = scanner.next();
+				System.out.println("pub_id: ");
+				int pub_id = scanner.nextInt();
+				DBActions.addArticleToPublication(date, text, title, topic, pub_id);
 			}
 		}
 		

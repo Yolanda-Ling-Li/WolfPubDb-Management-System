@@ -66,6 +66,9 @@ public class DBActions {
 	public static void viewPublication(int person_id) {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
+			while (result.next()) {
+				System.out.println(String.format("%d %s %s", result.getInt(1), result.getString(2), result.getDate(3)));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +103,14 @@ public class DBActions {
 		try {
 			statement.executeUpdate("INSERT INTO Publications VALUES(" + pub_id + ", '" + title + "', '" + date + "')");
 			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void assignEditorToPublication(int person_id, int pub_id) {
+		try {
+			statement.executeUpdate(String.format("INSERT INTO Editor_edit_Publications VALUES (%d, %d)", person_id, pub_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
