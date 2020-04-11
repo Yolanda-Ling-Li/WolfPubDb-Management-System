@@ -75,46 +75,43 @@ public class Main {
 			if (selectedTask == 2) {
 				System.out.println("person_id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
-				System.out.println("Select the field you want to update 1. name 2. type 3. gender 4. age 5. email 6. phone_num 7. address");
-				int selectedField = Integer.parseInt(scanner.nextLine());
-				switch(selectedField) {
-				case 1:
-					System.out.println("name: ");
-					String name = scanner.nextLine();
-					DBActions.updatePerson(person_id, name, null, null, null, null, null, null);
-					break;
-				case 2:
-					System.out.println("type: ");
-					String type = scanner.nextLine();
-					DBActions.updatePerson(person_id, null, type, null, null, null, null, null);
-					break;
-				case 3:
-					System.out.println("gender: ");
-					String gender = scanner.nextLine();
-					DBActions.updatePerson(person_id, null, null, gender, null, null, null, null);
-					break;
-				case 4: 
-					System.out.println("age: ");
-					int age = Integer.parseInt(scanner.nextLine());
-					DBActions.updatePerson(person_id, null, null, null, age, null, null, null);
-					break;
-				case 5:
-					System.out.println("email: ");
-					String email = scanner.nextLine();
-					DBActions.updatePerson(person_id, null, null, null, null, email, null, null);
-					break;
-				case 6:
-					System.out.println("phone No.: ");
-					String phoneNo = scanner.nextLine();
-					DBActions.updatePerson(person_id, null, null, null, null, null, phoneNo, null);
-					break;			
-				case 7:
-					System.out.println("address");
-					String address = scanner.nextLine();
-					DBActions.updatePerson(person_id, null, null, null, null, null, null, address);
-					break;			
-					
+	
+				System.out.println("name: ");
+				String name = scanner.nextLine();
+
+				System.out.println("type: ");
+				String type = scanner.nextLine();
+
+				System.out.println("gender: ");
+				String gender = scanner.nextLine();
+	
+				System.out.println("age: ");
+				int age;
+				try {
+					age = Integer.parseInt(scanner.nextLine());
+				} catch (Exception e) {
+					age = -1;
 				}
+
+				System.out.println("email: ");
+				String email = scanner.nextLine();
+
+				System.out.println("phone No.: ");
+				String phone_no = scanner.nextLine();
+
+				System.out.println("address");
+				String address = scanner.nextLine();
+				
+				DBActions.updatePerson(person_id, 
+						name.isEmpty() ? null : name, 
+						type.isEmpty() ? null : type, 
+						gender.isEmpty() ? null : gender, 
+						age == -1 ? null : age, 
+						email.isEmpty() ? null : email, 
+						phone_no.isEmpty() ? null : phone_no, 
+						address.isEmpty() ? null : address);
+			
+				
 			}
 			if (selectedTask == 3) {
 				System.out.println("person_id:");
@@ -129,17 +126,44 @@ public class Main {
 				DBActions.viewPublication(person_id);
 			}
 			if (selectedTask == 5) {
-				System.out.println("date: ");
-				String date = scanner.nextLine();
-				System.out.println("text: ");
-				String text = scanner.nextLine();
-				System.out.println("title: ");
-				String title = scanner.nextLine();
-				System.out.println("topic: ");
-				String topic = scanner.nextLine();
-				System.out.println("pub_id: ");
-				int pub_id = Integer.parseInt(scanner.nextLine());
-				DBActions.addArticleToPublication(date, text, title, topic, pub_id);
+				System.out.println("1. add 2. update 3. delete");
+				int selected = Integer.parseInt(scanner.nextLine());
+				if (selected == 1) {
+					System.out.println("date: ");
+					String date = scanner.nextLine();
+					System.out.println("text: ");
+					String text = scanner.nextLine();
+					System.out.println("title: ");
+					String title = scanner.nextLine();
+					System.out.println("topic: ");
+					String topic = scanner.nextLine();
+					System.out.println("pub_id: ");
+					int pub_id = Integer.parseInt(scanner.nextLine());
+					DBActions.addArticleToPublication(date, text, title, topic, pub_id);
+				}
+				if (selected == 2) {
+					System.out.println("art_id: ");
+					int art_id = Integer.parseInt(scanner.nextLine());
+					System.out.println("title: ");
+					String title = scanner.nextLine();
+					System.out.println("text: ");
+					String text = scanner.nextLine();
+					System.out.println("topic: ");
+					String topic = scanner.nextLine();
+					System.out.println("date: ");
+					String date = scanner.nextLine();
+					DBActions.updateArticleOrChapter(art_id, 
+							title.isEmpty() ? null : title, 
+							text.isEmpty() ? null : text, 
+							topic.isEmpty() ? null : topic, 
+							date.isEmpty() ? null : date);
+				}
+				if (selected == 3) {
+					System.out.println("art_id: ");
+					int art_id = Integer.parseInt(scanner.nextLine());
+					DBActions.deleteArticleToPublication(art_id);
+				}
+
 			}
 		}
 		
