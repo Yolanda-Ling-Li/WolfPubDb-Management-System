@@ -1,5 +1,3 @@
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -72,6 +70,15 @@ public class DBActions {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+	}
+	
+	public static void assignEditorToPublication(int person_id, int pub_id) {
+		try {
+			statement.executeUpdate(String.format("INSERT INTO Editor_edit_Publications VALUES (%d, %d)", person_id, pub_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void addArticleToPublication(String date, String text, String title, String topic, int pub_id) {
@@ -103,14 +110,6 @@ public class DBActions {
 		try {
 			statement.executeUpdate("INSERT INTO Publications VALUES(" + pub_id + ", '" + title + "', '" + date + "')");
 			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void assignEditorToPublication(int person_id, int pub_id) {
-		try {
-			statement.executeUpdate(String.format("INSERT INTO Editor_edit_Publications VALUES (%d, %d)", person_id, pub_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -238,59 +237,78 @@ public class DBActions {
 		}
 	}
 
-	private static void enterNewDistributor(int person_id, String name, String type, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
+	public static void enterNewDistributor(String type, String name, String gender, Integer age, String email, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
-			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (%d, %s, %s, %s, %s);", person_id, name, type, phone_num, address));
-			statement.executeUpdate(String.format("INSERT INTO Distributors VALUES (%d, %f, %s, %s, %s, %s, %s);", person_id, balance, contact_person, d_type, city));
+			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, '%s', '%s', '%s', %d, '%s', '%s', '%s');", type, name, gender, age, email, phone_num, address));
+			statement.executeUpdate(String.format("INSERT INTO Distributors VALUES (LAST_INSERT_ID(), %f, '%s', '%s', '%s');", balance, contact_person, d_type, city));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static void updateDistributor(int person_id, String name, String type, Float balance, String contact_person, String phone_num, String d_type, String city, String address) throws SQLException {
-		if (name != null) {
-			statement.executeUpdate(String.format("UPDATE Persons SET name = %s WHERE person_id =%d;", name, person_id));
+	public static void updateDistributor(int person_id, String name, String gender, String age, String email, String balance, String contact_person, String phone_num, String d_type, String city, String address) {
+		try {
+			if (!name.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET name = '%s' WHERE person_id =%d;", name, person_id));
+			}
+			if (!gender.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET gender = '%s' WHERE person_id =%d;", gender, person_id));
+			}
+			if (!age.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET age = %d WHERE person_id =%d;", Integer.parseInt(age), person_id));
+			}
+			if (!email.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET email = '%s' WHERE person_id =%d;", email, person_id));
+			}
+			if (!phone_num.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET phone_num = '%s' WHERE person_id =%d;", phone_num, person_id));
+			}
+			if (!address.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Persons SET address = '%s' WHERE person_id =%d;", address, person_id));
+			}	
+			if (!balance.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Distributors SET balance = %f WHERE person_id =%d;", Float.parseFloat(balance), person_id));
+			}
+			if (!contact_person.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Distributors SET contact_person = '%s' WHERE person_id =%d;", contact_person, person_id));
+			}
+			if (!d_type.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Distributors SET type = '%s' WHERE person_id =%d;", d_type, person_id));
+			}
+			if (!city.equals("")) {
+				statement.executeUpdate(String.format("UPDATE Distributors SET city = '%s' WHERE person_id =%d;", city, person_id));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		if (type != null) {
-			statement.executeUpdate(String.format("UPDATE Persons SET type = %s WHERE person_id =%d;", type, person_id));
-		}
-		if (balance != null) {
-			statement.executeUpdate(String.format("UPDATE Distributors SET balance = %f WHERE person_id =%d;", balance, person_id));
-		}
-		if (contact_person != null) {
-			statement.executeUpdate(String.format("UPDATE Distributors SET contact_person = %s WHERE person_id =%d;", contact_person, person_id));
-		}
-		if (phone_num != null) {
-			statement.executeUpdate(String.format("UPDATE Persons SET phone_num = %s WHERE person_id =%d;", phone_num, person_id));
-		}
-		if (d_type != null) {
-			statement.executeUpdate(String.format("UPDATE Distributors SET type = %s WHERE person_id =%d;", d_type, person_id));
-		}
-		if (city != null) {
-			statement.executeUpdate(String.format("UPDATE Distributors SET city = %s WHERE person_id =%d;", city, person_id));
-		}
-		if (address != null) {
-			statement.executeUpdate(String.format("UPDATE Persons SET address = %s WHERE person_id =%d;", address, person_id));
+	}
+
+	public static void deleteDistributor(int person_id){
+		try {
+			statement.executeUpdate(String.format("DELETE FROM Persons WHERE person_id=%d;", person_id));
+			statement.executeUpdate(String.format("DELETE FROM Distributors WHERE person_id=%d;", person_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}	
 	}
 
-	private static void deleteDistributor(int person_id) throws SQLException {
-		statement.executeUpdate(String.format("DELETE FROM Distributors WHERE person_id=%d;", person_id));
-	}
-
-	private static void inputOrderByDistributor(int order_id, int num_of_copy, String date, float price, float shipping_cost, int person_id, int pub_id) {
+	public static void inputOrderByDistributor(int num_of_copy, String order_date, String delivery_date, float price, float shipping_cost, int person_id, int pub_id) {
 		try {
-			statement.executeUpdate(String.format("INSERT INTO Orders VALUES(%d, %d, %s, %f, %f, %d, %d);", order_id, num_of_copy, date, price, shipping_cost, person_id, pub_id));
+			statement.executeUpdate(String.format("INSERT INTO Orders VALUES(NULL, %d, '%s', '%s', %f, %f, %d, %d);", num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static void billDistributorAnOrder(int order_id) throws SQLException {
-		statement.executeUpdate(String.format("UPDATE Distributors SET balance=balance+(SELECT price+shipping_cost FROM Orders WHERE order_id=%d) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=%d); ", order_id, order_id));
+	public static void billDistributorAnOrder(int order_id){
+		try {
+			statement.executeUpdate(String.format("UPDATE Distributors SET balance=balance+(SELECT price+shipping_cost FROM Orders WHERE order_id=%d) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=%d); ", order_id, order_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 	}
 	
-	private static void generateMonthlyReport() {
+	public static void generateMonthlyReport() {
 		try {
 			result = statement
 					.executeQuery("SELECT MONTH(date), person_id, pub_id, COUNT(*), SUM(price)" + 
@@ -306,7 +324,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalRevenueofPublishingHouse() {
+	public static void totalRevenueofPublishingHouse() {
 		try {
 			result = statement
 					.executeQuery("SELECT MONTH(date), SUM(price) FROM Orders" + 
@@ -321,7 +339,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalExpenses() {
+	public static void totalExpenses() {
 		try {
 			result = statement
 					.executeQuery("SELECT MONTH(date), SUM(expense) FROM (" + 
@@ -340,7 +358,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalDistributors() {
+	public static void totalDistributors() {
 		try {
 			result = statement
 					.executeQuery("SELECT COUNT(person_id) FROM Distributors;");
@@ -354,7 +372,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalRevenuePerCity() {
+	public static void totalRevenuePerCity() {
 		try {
 			result = statement
 					.executeQuery("SELECT city, SUM(price) FROM Orders, Distributor" + 
@@ -369,7 +387,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalRevenuePerDistributor() {
+	public static void totalRevenuePerDistributor() {
 		try {
 			result = statement
 					.executeQuery("SELECT Orders.person_id, name, SUM(price)" + 
@@ -386,7 +404,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalRevenuePerLocation() {
+	public static void totalRevenuePerLocation() {
 		try {
 			result = statement
 					.executeQuery("SELECT address, SUM(price) FROM Orders, Persons" + 
@@ -401,7 +419,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalPaymentsEditorsPerTimePeriod () {
+	public static void totalPaymentsEditorsPerTimePeriod () {
 		try {
 			result = statement
 					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments, Editors WHERE Payments.person_id=Editors.person_id GROUP BY MONTH(Payments.date);");
@@ -415,7 +433,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalPaymentsEditorsPerWorkType() {
+	public static void totalPaymentsEditorsPerWorkType() {
 		try {
 			result = statement
 					.executeQuery("SELECT Editors.type, SUM(amount) FROM Payments, Editors" + 
@@ -430,7 +448,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalPaymentsAuthorsPerTimePeriod() {
+	public static void totalPaymentsAuthorsPerTimePeriod() {
 		try {
 			result = statement
 					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY MONTH(Payments.date);");
@@ -444,7 +462,7 @@ public class DBActions {
 		}
 	}
 	
-	private static void totalPaymentsAuthorsPerWorkType() {
+	public static void totalPaymentsAuthorsPerWorkType() {
 		try {
 			result = statement
 					.executeQuery("SELECT Authors.type, SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY Authors.type;");

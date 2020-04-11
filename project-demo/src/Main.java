@@ -31,7 +31,9 @@ public class Main {
 		tasks.add(op2Tasks);
 		
 		List<String> op3Tasks = new ArrayList<String>();
-		op3Tasks.add("Enter new distributor; update distributor information; delete a distributor");
+		op3Tasks.add("Enter new distributor");
+		op3Tasks.add("Update distributor information");
+		op3Tasks.add("Delete a distributor");
 		op3Tasks.add("Input orders from distributors, for a book edition or an issue of a publication per distributor, for a certain date");
 		op3Tasks.add("Bill distributor for an order;change outstanding balance of a distributor on receipt of a payment");
 		tasks.add(op3Tasks);
@@ -190,13 +192,80 @@ public class Main {
 		
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
-				
+				String type = "distributor";
+				System.out.println("name: ");
+				String name = scanner.nextLine();
+				System.out.println("gender: ");
+				String gender = scanner.nextLine();
+				System.out.println("age: ");
+				Integer age = Integer.parseInt(scanner.nextLine());
+				System.out.println("email: ");
+				String email = scanner.nextLine();
+				System.out.println("balance: ");
+				Float balance = Float.parseFloat(scanner.nextLine());
+				System.out.println("contact_person: ");
+				String contact_person = scanner.nextLine();
+				System.out.println("phone_num: ");
+				String phone_num = scanner.nextLine();
+				System.out.println("type of distributor: ");
+				String d_type = scanner.nextLine();
+				System.out.println("city: ");
+				String city = scanner.nextLine();
+				System.out.println("address: ");
+				String address = scanner.nextLine();
+				DBActions.enterNewDistributor(type, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
 			}
 			if (selectedTask == 2) {
-				
+				System.out.println("which distributor do you to want change? Please input id: ");
+				int person_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("new name(Enter for not change): ");
+				String name = scanner.nextLine();
+				System.out.println("new gender(Enter for not change): ");
+				String gender = scanner.nextLine();
+				System.out.println("new age(Enter for not change): ");
+				String age = scanner.nextLine();
+				System.out.println("new email(Enter for not change): ");
+				String email = scanner.nextLine();
+				System.out.println("new balance(Enter for not change): ");
+				String balance = scanner.nextLine();
+				System.out.println("new contact_person(Enter for not change): ");
+				String contact_person = scanner.nextLine();
+				System.out.println("new phone_num(Enter for not change): ");
+				String phone_num = scanner.nextLine();
+				System.out.println("new type of distributor(Enter for not change): ");
+				String d_type = scanner.nextLine();
+				System.out.println("new city(Enter for not change): ");
+				String city = scanner.nextLine();
+				System.out.println("new address(Enter for not change): ");
+				String address = scanner.nextLine();
+				DBActions.updateDistributor(person_id, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
 			}
 			if (selectedTask == 3) {
-				
+				System.out.println("which distributor do you want to delete? Please input id: ");
+				int person_id = Integer.parseInt(scanner.nextLine());
+				DBActions.deleteDistributor(person_id);
+			}
+			if (selectedTask == 4) {
+				System.out.println("num_of_copy: ");
+				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
+				System.out.println("order_date: ");
+				String order_date = scanner.nextLine();
+				System.out.println("delivery_date: ");
+				String delivery_date = scanner.nextLine();
+				System.out.println("price: ");
+				Float price = Float.parseFloat(scanner.nextLine());
+				System.out.println("shipping_cost: ");
+				Float shipping_cost = Float.parseFloat(scanner.nextLine());
+				System.out.println("person_id: ");
+				Integer person_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("pub_id: ");
+				Integer pub_id = Integer.parseInt(scanner.nextLine());
+				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
+			}
+			if (selectedTask == 5) {
+				System.out.println("which order do you want to bill? Please input id: ");
+				int order_id = Integer.parseInt(scanner.nextLine());
+				DBActions.billDistributorAnOrder(order_id);
 			}
 		}
 		
