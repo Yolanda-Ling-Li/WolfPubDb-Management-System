@@ -270,23 +270,63 @@ public class Main {
 		}
 		
 		if (selectedOperation == 4) {
+			//Generate monthly reports: number and total price of copies of each publication bought per distributor per month
 			if (selectedTask == 1) {
-				
+				System.out.println("Please enter a month number from 0 to 12");
+				Scanner scan = new Scanner(System.in);
+				int month = scan.nextInt();
+				System.out.println();
+				System.out.println("Monthly Report");
+				DBActions.generateMonthlyReport(month);
 			}
+			//total revenue of the publishing house
 			if (selectedTask == 2) {
-				
+				System.out.println("Please enter a month number from 0 to 12");
+				Scanner scan = new Scanner(System.in);
+				int month = scan.nextInt();
+				System.out.println();
+				System.out.println("Total revenue of the publishing house");
+				DBActions.totalRevenueofPublishingHouse(month);
 			}
+			//total expenses (i.e., shipping costs and salaries
 			if (selectedTask == 3) {
-				
+				System.out.println("Please enter a month number from 0 to 12");
+				Scanner scan = new Scanner(System.in);
+				int month = scan.nextInt();
+				System.out.println();
+				System.out.println("Total expenses (i.e., shipping costs and salaries).");
+				DBActions.totalExpenses(month);
 			}
+			//Calculate the total current number of distributors
 			if (selectedTask == 4) {
-				
+				System.out.println("Total current number of distributors");
+				DBActions.totalDistributors();
 			}
+			//Calculate total revenue (since inception) per city, per distributor, and per location
 			if (selectedTask == 5) {
-				
+				System.out.println();
+				System.out.println("Total revenue per city");
+				DBActions.totalRevenuePerCity();
+				System.out.println();
+				System.out.println("Total revenue per distributor");
+				DBActions.totalRevenuePerDistributor();
+				System.out.println();
+				System.out.println("Total revenue per location");
+				DBActions.totalRevenuePerLocation();
+				System.out.println();
 			}
+			//Calculate total payments to the editors and authors, per time period and per work type (book authorship, article authorship, or editorial work
 			if (selectedTask == 6) {
-				
+				System.out.println();
+				System.out.println("Total payments to the editors per time period");
+				DBActions.totalPaymentsEditorsPerTimePeriod();
+				System.out.println();
+				System.out.println("Total payments to the work type per time period");
+				DBActions.totalPaymentsEditorsPerWorkType();
+				System.out.println();
+				System.out.println("Total payments to the authors per time period");
+				DBActions.totalPaymentsAuthorsPerTimePeriod();
+				System.out.println();
 			}
 		}
 		
