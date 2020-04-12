@@ -183,15 +183,23 @@ public class DBActions {
 		}
 	}
 	
-	public static void addArticleToPublication(String date, String text, String title, String topic, int pub_id) {
+	public static void addArticleToPublication(int art_id, int pub_id) {
 		try {
-			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES(NULL,'" + date + "', '" + text + "', '" + title + "', '" + topic + "'," + pub_id + ")");
+			statement.executeUpdate(String.format("INSERT INTO Articles_or_Chapters_in_Publications VALUES (%d, %d)", pub_id, art_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void deleteArticleToPublication(String art_id) {
+
+	public static void deleteArticleToPublication(int art_id, int pub_id) {
+		try {
+			statement.executeUpdate(String.format("DELETE FROM Articles_or_Chapters_in_Publications WHERE art_id=%d and pub_id=%d", art_id, pub_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteArticle(String art_id) {
 		try {
 			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
 		} catch (SQLException e) {

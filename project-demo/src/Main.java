@@ -100,22 +100,18 @@ public class Main {
 				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
 				if (selected == 1) {
-					System.out.println("date: ");
-					String date = scanner.nextLine();
-					System.out.println("text: ");
-					String text = scanner.nextLine();
-					System.out.println("title: ");
-					String title = scanner.nextLine();
-					System.out.println("topic: ");
-					String topic = scanner.nextLine();
+					System.out.println("art_id: ");
+					int art_id = Integer.parseInt(scanner.nextLine());
 					System.out.println("pub_id: ");
 					int pub_id = Integer.parseInt(scanner.nextLine());
-					DBActions.addArticleToPublication(date, text, title, topic, pub_id);
+					DBActions.addArticleToPublication(art_id, pub_id);
 				}
-				if (selected == 3) {
+				if (selected == 2) {
 					System.out.println("art_id: ");
-					String art_id = scanner.nextLine();
-					DBActions.deleteArticleToPublication(art_id);
+					int art_id = Integer.parseInt(scanner.nextLine());
+					System.out.println("pub_id: ");
+					int pub_id = Integer.parseInt(scanner.nextLine());
+					DBActions.deleteArticleToPublication(art_id, pub_id);
 				}
 			}
 		}
@@ -249,7 +245,7 @@ public class Main {
 					String date = scanner.nextLine();
 					DBActions.updateArticleChapter(art_id, title, text, topic, date);
 				} else if (op.equals("D")) {
-					DBActions.deleteArticleToPublication(art_id);
+					DBActions.deleteArticle(art_id);
 				}
 
 			}
