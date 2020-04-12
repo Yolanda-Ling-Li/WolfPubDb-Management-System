@@ -1,5 +1,7 @@
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
@@ -110,6 +112,27 @@ public class DBActions {
 	public static void viewPeriodicals() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Periodicals");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewEditorsAuthors() {
+		try {
+			result = statement.executeQuery("(SELECT Persons.person_id AS person_id, name, gender, age, email, " +
+					"CONCAT(Editors.type, ' ', Persons.type) AS type FROM Persons JOIN Editors ON Persons.person_id = Editors.person_id)\n" +
+					"UNION (SELECT Persons.person_id AS person_id, name, gender, age, email, " +
+					"CONCAT(Authors.type, ' ', Persons.type) AS type FROM Persons JOIN Authors ON Persons.person_id = Authors.person_id);");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewUnclaimedPayments(String person_id) {
+		try {
+			result = statement.executeQuery("SELECT * FROM Payments WHERE person_id=" + person_id + " AND date IS NULL");
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -345,9 +368,19 @@ public class DBActions {
 		}
 	}
 	
-	public static void addPayment(int pay_id, String date, String type, float amount, String person_id) {
+	public static void addPayment(String type, String amount, String person_id) {
 		try {
-			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, '" + date + "', '" + type + "', " + amount + ", " + person_id +")");
+			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, '" + type + "', " + amount + ", " + person_id +")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void claimPayment(String person_id) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate today = LocalDate.now();
+		try {
+			statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE person_id=" + person_id + " AND date is NULL");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
