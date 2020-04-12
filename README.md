@@ -10,8 +10,9 @@ We develop this application using [Eclipse](https://www.eclipse.org/downloads/).
 
 ## Initialize database
 We use mysql to build database. Initialize database through .sql file
-`source creates_only.sql`
-`source inserts_only.sql`
+
+    source creates_only.sql
+    source inserts_only.sql
 
 ## Run in command line
 Navigate to where Main.class locates. Execute below command:
