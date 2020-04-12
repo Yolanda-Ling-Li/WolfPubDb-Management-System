@@ -107,15 +107,6 @@ public class DBActions {
 		}
 	}
 
-	public static void viewPublications() {
-		try {
-			result = statement.executeQuery("SELECT * FROM Publications");
-			printResultSet(result);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static void viewPeriodicals() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Periodicals");
