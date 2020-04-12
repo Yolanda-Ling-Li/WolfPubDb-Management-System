@@ -75,45 +75,14 @@ public class Main {
 				
 			}
 			if (selectedTask == 2) {
-				System.out.println("person_id: ");
-				int person_id = Integer.parseInt(scanner.nextLine());
-	
-				System.out.println("name: ");
-				String name = scanner.nextLine();
-
-				System.out.println("type: ");
-				String type = scanner.nextLine();
-
-				System.out.println("gender: ");
-				String gender = scanner.nextLine();
-	
-				System.out.println("age: ");
-				int age;
-				try {
-					age = Integer.parseInt(scanner.nextLine());
-				} catch (Exception e) {
-					age = -1;
-				}
-
-				System.out.println("email: ");
-				String email = scanner.nextLine();
-
-				System.out.println("phone No.: ");
-				String phone_no = scanner.nextLine();
-
-				System.out.println("address");
-				String address = scanner.nextLine();
+				System.out.println("pub_id:");
+				int pub_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("title:");
+				String title = scanner.nextLine();
+				System.out.println("date: ");
+				String date = scanner.nextLine();
 				
-				DBActions.updatePerson(person_id, 
-						name.isEmpty() ? null : name, 
-						type.isEmpty() ? null : type, 
-						gender.isEmpty() ? null : gender, 
-						age == -1 ? null : age, 
-						email.isEmpty() ? null : email, 
-						phone_no.isEmpty() ? null : phone_no, 
-						address.isEmpty() ? null : address);
-			
-				
+				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
 			}
 			if (selectedTask == 3) {
 				System.out.println("person_id:");
@@ -328,6 +297,7 @@ public class Main {
 		
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
+				DBActions.viewDistributors();
 				String type = "distributor";
 				System.out.println("name: ");
 				String name = scanner.nextLine();
@@ -350,8 +320,10 @@ public class Main {
 				System.out.println("address: ");
 				String address = scanner.nextLine();
 				DBActions.enterNewDistributor(type, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 2) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you to want change? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("new name(Enter for not change): ");
@@ -375,13 +347,17 @@ public class Main {
 				System.out.println("new address(Enter for not change): ");
 				String address = scanner.nextLine();
 				DBActions.updateDistributor(person_id, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 3) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you want to delete? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.deleteDistributor(person_id);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 4) {
+				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
 				System.out.println("order_date: ");
@@ -397,11 +373,15 @@ public class Main {
 				System.out.println("pub_id: ");
 				Integer pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
+				DBActions.viewOrders();
 			}
 			if (selectedTask == 5) {
+				DBActions.viewOrders();
+				DBActions.viewDistributors();
 				System.out.println("which order do you want to bill? Please input id: ");
 				int order_id = Integer.parseInt(scanner.nextLine());
 				DBActions.billDistributorAnOrder(order_id);
+				DBActions.viewDistributors();
 			}
 		}
 		
