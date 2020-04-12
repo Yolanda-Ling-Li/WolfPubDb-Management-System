@@ -1,5 +1,5 @@
-# csc540 project demo
-Homework and reports for csc540 database management system
+# csc540 demo project
+Final demo project for csc540 database management system
 
 ## Project setup
 We develop this application using [Eclipse](https://www.eclipse.org/downloads/). You can also use command line to compile.
