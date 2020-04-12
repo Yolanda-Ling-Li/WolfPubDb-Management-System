@@ -598,11 +598,11 @@ public class DBActions {
 	public static void generateMonthlyReport(int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), person_id, pub_id, num_of_copy, SUM(price) FROM Orders WHERE MONTH(order_date) = %d GROUP BY person_id;", month));
+					.executeQuery(String.format("SELECT MONTH(order_date), person_id, pub_id, num_of_copy, (SUM(price)+SUM(shipping_cost)) AS total_price FROM Orders WHERE MONTH(order_date) = %d GROUP BY person_id;", month));
 			
 			System.out.println("Month | Distributor id | Publication id | Number of copy | SUM of price ");
 			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getInt("pub_id") + " | " + result.getInt("num_of_copy") + " | " + result.getFloat("SUM(price)"));	
+				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getInt("pub_id") + " | " + result.getInt("num_of_copy") + " | " + result.getFloat("total_price"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
