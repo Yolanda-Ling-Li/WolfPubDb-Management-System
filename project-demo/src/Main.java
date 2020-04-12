@@ -15,7 +15,7 @@ public class Main {
 		
 		List<String> op1Tasks = new ArrayList<String>();
 		op1Tasks.add("Enter basic information on a new publication");
-		op1Tasks.add("Update information");
+		op1Tasks.add("Update publication information");
 		op1Tasks.add("Assign editor(s) to publication");
 		op1Tasks.add("Let each editor view the information on the publications he/she is responsible for");
 		op1Tasks.add("Edit table of contents of a publication, by adding/deleting articles (for periodic publications) or chapters/sections (for books)");
@@ -36,7 +36,8 @@ public class Main {
 		op3Tasks.add("Update distributor information");
 		op3Tasks.add("Delete a distributor");
 		op3Tasks.add("Input orders from distributors, for a book edition or an issue of a publication per distributor, for a certain date");
-		op3Tasks.add("Bill distributor for an order;change outstanding balance of a distributor on receipt of a payment");
+		op3Tasks.add("Bill distributor for an order");
+		op3Tasks.add("Change outstanding balance of a distributor on receipt of a payment");
 		tasks.add(op3Tasks);
 		
 		List<String> op4Tasks = new ArrayList<String>();
@@ -67,32 +68,39 @@ public class Main {
 		
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
+				DBActions.viewPublications();
 				System.out.println("title: ");
 				String title = scanner.nextLine();
 				System.out.println("date: ");
 				String date = scanner.nextLine();
-				
 				DBActions.addPublication(title, date);
-				
+				DBActions.viewPublications();
 			}
 			if (selectedTask == 2) {
+				DBActions.viewPublications();
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("title:");
 				String title = scanner.nextLine();
 				System.out.println("date: ");
 				String date = scanner.nextLine();
-				
 				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
+				DBActions.viewPublications();
 			}
 			if (selectedTask == 3) {
+				DBActions.viewEditors();
+				DBActions.viewPublications();
+				DBActions.viewEditor_edit_Publication();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.assignEditorToPublication(person_id, pub_id);
+			
+				DBActions.viewEditor_edit_Publication();
 			}
 			if (selectedTask == 4) {
+				DBActions.viewEditors();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.viewPublicationByEditor(person_id);
@@ -100,6 +108,10 @@ public class Main {
 			if (selectedTask == 5) {
 				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
+				
+				DBActions.viewArticlesChapters();
+				DBActions.viewPublications();
+				DBActions.viewArticles_or_Chapters_in_Publications();
 				if (selected == 1) {
 					System.out.println("art_id: ");
 					int art_id = Integer.parseInt(scanner.nextLine());
@@ -114,6 +126,8 @@ public class Main {
 					int pub_id = Integer.parseInt(scanner.nextLine());
 					DBActions.deleteArticleToPublication(art_id, pub_id);
 				}
+				
+				DBActions.viewArticles_or_Chapters_in_Publications();
 			}
 		}
 		
@@ -298,16 +312,11 @@ public class Main {
 		
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
+				System.out.println("*The current table of Distributors is:");
 				DBActions.viewDistributors();
 				String type = "distributor";
 				System.out.println("name: ");
 				String name = scanner.nextLine();
-				System.out.println("gender: ");
-				String gender = scanner.nextLine();
-				System.out.println("age: ");
-				Integer age = Integer.parseInt(scanner.nextLine());
-				System.out.println("email: ");
-				String email = scanner.nextLine();
 				System.out.println("balance: ");
 				Float balance = Float.parseFloat(scanner.nextLine());
 				System.out.println("contact_person: ");
@@ -319,22 +328,18 @@ public class Main {
 				System.out.println("city: ");
 				String city = scanner.nextLine();
 				System.out.println("address: ");
-				String address = scanner.nextLine();
-				DBActions.enterNewDistributor(type, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				String address = scanner.nextLine();				
+				DBActions.enterNewDistributor(type, name, balance, contact_person, phone_num, d_type, city, address);
+				System.out.println("*After insert, the current table of Distributors is:");
 				DBActions.viewDistributors();
 			}
 			if (selectedTask == 2) {
+				System.out.println("*The current table of Distributors is:");
 				DBActions.viewDistributors();
-				System.out.println("which distributor do you to want change? Please input id: ");
+				System.out.println("Which distributor do you want to update? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("new name(Enter for not change): ");
 				String name = scanner.nextLine();
-				System.out.println("new gender(Enter for not change): ");
-				String gender = scanner.nextLine();
-				System.out.println("new age(Enter for not change): ");
-				String age = scanner.nextLine();
-				System.out.println("new email(Enter for not change): ");
-				String email = scanner.nextLine();
 				System.out.println("new balance(Enter for not change): ");
 				String balance = scanner.nextLine();
 				System.out.println("new contact_person(Enter for not change): ");
@@ -347,17 +352,21 @@ public class Main {
 				String city = scanner.nextLine();
 				System.out.println("new address(Enter for not change): ");
 				String address = scanner.nextLine();
-				DBActions.updateDistributor(person_id, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.updateDistributor(person_id, name, balance, contact_person, phone_num, d_type, city, address);
+				System.out.println("*After update, the current table of Distributors is:");
 				DBActions.viewDistributors();
 			}
 			if (selectedTask == 3) {
+				System.out.println("*The current table of Distributors is:");
 				DBActions.viewDistributors();
 				System.out.println("which distributor do you want to delete? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.deleteDistributor(person_id);
+				System.out.println("*After delete, the current table of Distributors is:");
 				DBActions.viewDistributors();
 			}
 			if (selectedTask == 4) {
+				System.out.println("*The current table of Orders is:");
 				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
@@ -369,20 +378,48 @@ public class Main {
 				Float price = Float.parseFloat(scanner.nextLine());
 				System.out.println("shipping_cost: ");
 				Float shipping_cost = Float.parseFloat(scanner.nextLine());
+				System.out.println("*The current table of Distributors is:");
+				DBActions.viewDistributors();
 				System.out.println("person_id: ");
 				Integer person_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("*The current table of Publications is:");
+				DBActions.viewPublications();
 				System.out.println("pub_id: ");
 				Integer pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
+				System.out.println("*After insert, the current table of Orders is:");
 				DBActions.viewOrders();
 			}
 			if (selectedTask == 5) {
+				System.out.println("*The current table of Orders is:");
 				DBActions.viewOrders();
+				System.out.println("=====================================================================");
+				System.out.println("*The current table of Distributors is:");
 				DBActions.viewDistributors();
-				System.out.println("which order do you want to bill? Please input id: ");
+				System.out.println("Which order do you want to bill? Please input order id: ");
 				int order_id = Integer.parseInt(scanner.nextLine());
 				DBActions.billDistributorAnOrder(order_id);
+				System.out.println("*After bill, the current table of Distributors is:");
 				DBActions.viewDistributors();
+			}
+			if (selectedTask == 6) {
+				System.out.println("*The current table of Distributors is:");
+				DBActions.viewDistributors();
+				System.out.println("=====================================================================");
+				System.out.println("*The current table of Payments is:");
+				DBActions.viewPayments();
+				System.out.println("Which distributor do you want to change balace? Please input id: ");
+				int person_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("date: ");
+				String date = scanner.nextLine();
+				System.out.println("amount: ");
+				Float amount = Float.parseFloat(scanner.nextLine());
+				DBActions.changeBalance(date, amount, person_id);
+				System.out.println("*After payment, the current table of Distributors is:");
+				DBActions.viewDistributors();
+				System.out.println("=====================================================================");
+				System.out.println("*After payment, the current table of Payments is:");
+				DBActions.viewPayments();
 			}
 		}
 		
