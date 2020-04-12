@@ -5,10 +5,37 @@ CREATE TABLE IF NOT EXISTS `Articles_Chapters` (
   `text` text NOT NULL,
   `title` varchar(128) NOT NULL,
   `topic` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`art_id`)
+);
+
+DROP TABLE IF EXISTS `Publications`;
+CREATE TABLE IF NOT EXISTS `Publications` (
+  `pub_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(128) NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`pub_id`)
+);
+
+DROP TABLE IF EXISTS `Articles_or_Chapters_in_Publications`;
+CREATE TABLE IF NOT EXISTS `Articles_or_Chapters_in_Publications` (
   `pub_id` int(11) NOT NULL,
-  PRIMARY KEY (`art_id`),
-  KEY `FK_Articles_Chapters_Publications` (`pub_id`),
-  CONSTRAINT `FK_Articles_Chapters_Publications` FOREIGN KEY (`pub_id`) REFERENCES `Publications` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `art_id` int(11) NOT NULL,
+  PRIMARY KEY (`pub_id`,`art_id`),
+  CONSTRAINT `Articles_or_Chapters_in_Publications_ibfk_1` FOREIGN KEY (`pub_id`) REFERENCES `Publications` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Articles_or_Chapters_in_Publications_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `Articles_Chapters` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS `Persons`;
+CREATE TABLE IF NOT EXISTS `Persons` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `gender` varchar(8),
+  `age` int(11),
+  `email` varchar(128),
+  `phone_num` varchar(20),
+  `address` varchar(128),
+  PRIMARY KEY (`person_id`)
 );
 
 DROP TABLE IF EXISTS `Authors`;
@@ -24,19 +51,8 @@ CREATE TABLE IF NOT EXISTS `Author_write_Articles_or_Chapters` (
   `person_id` int(11) NOT NULL,
   `art_id` int(11) NOT NULL,
   PRIMARY KEY (`person_id`,`art_id`),
-  KEY `art_id` (`art_id`),
   CONSTRAINT `Author_write_Articles_or_Chapters_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `Authors` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Author_write_Articles_or_Chapters_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `Articles_Chapters` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-DROP TABLE IF EXISTS `Author_write_Books`;
-CREATE TABLE IF NOT EXISTS `Author_write_Books` (
-  `person_id` int(11) NOT NULL,
-  `pub_id` int(11) NOT NULL,
-  PRIMARY KEY (`person_id`,`pub_id`),
-  KEY `pub_id` (`pub_id`),
-  CONSTRAINT `Author_write_Books_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `Authors` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Author_write_Books_ibfk_2` FOREIGN KEY (`pub_id`) REFERENCES `Books` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS `Books`;
@@ -47,6 +63,15 @@ CREATE TABLE IF NOT EXISTS `Books` (
   `topic` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`pub_id`),
   CONSTRAINT `Books_ibfk_1` FOREIGN KEY (`pub_id`) REFERENCES `Publications` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS `Author_write_Books`;
+CREATE TABLE IF NOT EXISTS `Author_write_Books` (
+  `person_id` int(11) NOT NULL,
+  `pub_id` int(11) NOT NULL,
+  PRIMARY KEY (`person_id`,`pub_id`),
+  CONSTRAINT `Author_write_Books_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `Authors` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Author_write_Books_ibfk_2` FOREIGN KEY (`pub_id`) REFERENCES `Books` (`pub_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS `Distributors`;
@@ -106,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `Orders` (
 DROP TABLE IF EXISTS `Payments`;
 CREATE TABLE IF NOT EXISTS `Payments` (
   `pay_id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
+  `date` date DEFAULT NULL,
   `type` varchar(128) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `person_id` int(11) NOT NULL,
@@ -121,25 +146,3 @@ CREATE TABLE IF NOT EXISTS `Periodicals` (
   `topic` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`period_id`)
 );
-
-DROP TABLE IF EXISTS `Persons`;
-CREATE TABLE IF NOT EXISTS `Persons` (
-  `person_id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(128) NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `gender` varchar(8),
-  `age` int(11),
-  `email` varchar(128),
-  `phone_num` varchar(20),
-  `address` varchar(128),
-  PRIMARY KEY (`person_id`)
-);
-
-DROP TABLE IF EXISTS `Publications`;
-CREATE TABLE IF NOT EXISTS `Publications` (
-  `pub_id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(128) NOT NULL,
-  `date` date NOT NULL,
-  PRIMARY KEY (`pub_id`)
-);
-

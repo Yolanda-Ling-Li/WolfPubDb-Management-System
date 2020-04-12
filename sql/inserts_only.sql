@@ -26,9 +26,13 @@ INSERT INTO Issues (pub_id, period_id) VALUES
 	(1002, 1),
 	(1003, 2);
 
-INSERT INTO Articles_Chapters (art_id, date, text, title, topic, pub_id) VALUES
-	(1, '2020-02-24', 'ABC', 'ABC', 'health', 1002),
-	(2, '2020-03-01', 'AAA', 'AAA', 'science', 1003);
+INSERT INTO Articles_Chapters (art_id, date, text, title, topic) VALUES
+	(1, '2020-02-24', 'ABC', 'ABC', 'health'),
+	(2, '2020-03-01', 'AAA', 'AAA', 'science');
+
+INSERT INTO Articles_or_Chapters_in_Publications (pub_id, art_id) VALUES
+	(1002, 1),
+	(1003, 2);
 
 INSERT INTO Authors (person_id, type) VALUES
 	(3003, 'invited');
