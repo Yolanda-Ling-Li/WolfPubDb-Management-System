@@ -26,7 +26,8 @@ public class Main {
 		op2Tasks.add("Update, delete a book edition or publication issue");
 		op2Tasks.add("Enter/update an article or chapter: title, author's name, topic, text, and date");
 		op2Tasks.add("Find books and articles by topic, date, author's name");
-		op2Tasks.add("Enter payment for author or editor, and keep track of when each payment was claimed by its addressee");
+		op2Tasks.add("Enter payment for author or editor");
+		op2Tasks.add("Claim payment for author or editor");
 		tasks.add(op2Tasks);
 		
 		List<String> op3Tasks = new ArrayList<String>();
@@ -271,12 +272,32 @@ public class Main {
 				}
 			}
 			if (selectedTask == 5) {
-				
+				//Enter payment for author or editor
+				DBActions.viewEditorsAuthors();
+				System.out.println("Enter the person_id of the addressee you want to pay: ");
+				String person_id = scanner.nextLine();
+				System.out.println("Enter the type of payment (one-time/monthly): ");
+				String type = scanner.nextLine();
+				System.out.println("Enter the amount of payment: ");
+				String amount = scanner.nextLine();
+				DBActions.addPayment(type, amount, person_id);
+			}
+			if (selectedTask == 6) {
+				//Claim payment for author or editor
+				DBActions.viewEditorsAuthors();
+				System.out.println("Enter your person_id to claim payments: ");
+				String person_id = scanner.nextLine();
+				DBActions.viewUnclaimedPayments(person_id);
+				System.out.println("Are you sure you want to claim all of the payments above? (Y/N): ");
+				String ans = scanner.nextLine();
+				if (ans.equals("Y"))
+					DBActions.claimPayment(person_id);
 			}
 		}
 		
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
+				DBActions.viewDistributors();
 				String type = "distributor";
 				System.out.println("name: ");
 				String name = scanner.nextLine();
@@ -299,8 +320,10 @@ public class Main {
 				System.out.println("address: ");
 				String address = scanner.nextLine();
 				DBActions.enterNewDistributor(type, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 2) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you to want change? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("new name(Enter for not change): ");
@@ -324,13 +347,17 @@ public class Main {
 				System.out.println("new address(Enter for not change): ");
 				String address = scanner.nextLine();
 				DBActions.updateDistributor(person_id, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 3) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you want to delete? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.deleteDistributor(person_id);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 4) {
+				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
 				System.out.println("order_date: ");
@@ -346,11 +373,15 @@ public class Main {
 				System.out.println("pub_id: ");
 				Integer pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
+				DBActions.viewOrders();
 			}
 			if (selectedTask == 5) {
+				DBActions.viewOrders();
+				DBActions.viewDistributors();
 				System.out.println("which order do you want to bill? Please input id: ");
 				int order_id = Integer.parseInt(scanner.nextLine());
 				DBActions.billDistributorAnOrder(order_id);
+				DBActions.viewDistributors();
 			}
 		}
 		
