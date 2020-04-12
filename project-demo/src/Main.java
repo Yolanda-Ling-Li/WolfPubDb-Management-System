@@ -26,7 +26,8 @@ public class Main {
 		op2Tasks.add("Update, delete a book edition or publication issue");
 		op2Tasks.add("Enter/update an article or chapter: title, author's name, topic, text, and date");
 		op2Tasks.add("Find books and articles by topic, date, author's name");
-		op2Tasks.add("Enter payment for author or editor, and keep track of when each payment was claimed by its addressee");
+		op2Tasks.add("Enter payment for author or editor");
+		op2Tasks.add("Claim payment for author or editor");
 		tasks.add(op2Tasks);
 		
 		List<String> op3Tasks = new ArrayList<String>();
@@ -302,7 +303,26 @@ public class Main {
 				}
 			}
 			if (selectedTask == 5) {
-				
+				//Enter payment for author or editor
+				DBActions.viewEditorsAuthors();
+				System.out.println("Enter the person_id of the addressee you want to pay: ");
+				String person_id = scanner.nextLine();
+				System.out.println("Enter the type of payment (one-time/monthly): ");
+				String type = scanner.nextLine();
+				System.out.println("Enter the amount of payment: ");
+				String amount = scanner.nextLine();
+				DBActions.addPayment(type, amount, person_id);
+			}
+			if (selectedTask == 6) {
+				//Claim payment for author or editor
+				DBActions.viewEditorsAuthors();
+				System.out.println("Enter your person_id to claim payments: ");
+				String person_id = scanner.nextLine();
+				DBActions.viewUnclaimedPayments(person_id);
+				System.out.println("Are you sure you want to claim all of the payments above? (Y/N): ");
+				String ans = scanner.nextLine();
+				if (ans.equals("Y"))
+					DBActions.claimPayment(person_id);
 			}
 		}
 		
