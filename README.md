@@ -15,5 +15,5 @@ We use mysql to build database. Initialize database through .sql file
     source inserts_only.sql
 
 ## Run in command line
-Navigate to where Main.class locates. Execute below command:
-`java Main`
+Navigate to where Main.class locates. Notice you need to specify the MariaDB as addtional classpath. Say you follow our folder structure, execute below command:
+`java Main -classpath ../mariadb-java-client-2.0.2.jar`
