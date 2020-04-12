@@ -15,7 +15,7 @@ public class Main {
 		
 		List<String> op1Tasks = new ArrayList<String>();
 		op1Tasks.add("Enter basic information on a new publication");
-		op1Tasks.add("Update information");
+		op1Tasks.add("Update publication information");
 		op1Tasks.add("Assign editor(s) to publication");
 		op1Tasks.add("Let each editor view the information on the publications he/she is responsible for");
 		op1Tasks.add("Edit table of contents of a publication, by adding/deleting articles (for periodic publications) or chapters/sections (for books)");
@@ -66,32 +66,39 @@ public class Main {
 		
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
+				DBActions.viewPublications();
 				System.out.println("title: ");
 				String title = scanner.nextLine();
 				System.out.println("date: ");
 				String date = scanner.nextLine();
-				
 				DBActions.addPublication(title, date);
-				
+				DBActions.viewPublications();
 			}
 			if (selectedTask == 2) {
+				DBActions.viewPublications();
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("title:");
 				String title = scanner.nextLine();
 				System.out.println("date: ");
 				String date = scanner.nextLine();
-				
 				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
+				DBActions.viewPublications();
 			}
 			if (selectedTask == 3) {
+				DBActions.viewEditors();
+				DBActions.viewPublications();
+				DBActions.viewEditor_edit_Publication();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.assignEditorToPublication(person_id, pub_id);
+			
+				DBActions.viewEditor_edit_Publication();
 			}
 			if (selectedTask == 4) {
+				DBActions.viewEditors();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.viewPublicationByEditor(person_id);
@@ -99,6 +106,11 @@ public class Main {
 			if (selectedTask == 5) {
 				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
+				
+				DBActions.viewArticlesChapters();
+				DBActions.viewPublications();
+				DBActions.viewArticles_or_Chapters_in_Publications();
+				System.out.println("Current ");
 				if (selected == 1) {
 					System.out.println("art_id: ");
 					int art_id = Integer.parseInt(scanner.nextLine());
@@ -113,6 +125,8 @@ public class Main {
 					int pub_id = Integer.parseInt(scanner.nextLine());
 					DBActions.deleteArticleToPublication(art_id, pub_id);
 				}
+				
+				DBActions.viewArticles_or_Chapters_in_Publications();
 			}
 		}
 		

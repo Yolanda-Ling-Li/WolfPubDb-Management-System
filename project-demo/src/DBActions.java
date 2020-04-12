@@ -92,9 +92,7 @@ public class DBActions {
 	public static void viewPublicationByEditor(int person_id) {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
-			while (result.next()) {
-				System.out.println(String.format("%d %s %s", result.getInt(1), result.getString(2), result.getDate(3)));
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -133,6 +131,34 @@ public class DBActions {
 					"CONCAT(Editors.type, ' ', Persons.type) AS type FROM Persons JOIN Editors ON Persons.person_id = Editors.person_id)\n" +
 					"UNION (SELECT Persons.person_id AS person_id, name, gender, age, email, " +
 					"CONCAT(Authors.type, ' ', Persons.type) AS type FROM Persons JOIN Authors ON Persons.person_id = Authors.person_id);");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewEditors() {
+		try {
+			result = statement.executeQuery("(SELECT Persons.person_id AS person_id, name, gender, age, email, " +
+					"CONCAT(Editors.type, ' ', Persons.type) AS type FROM Persons JOIN Editors ON Persons.person_id = Editors.person_id)");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewEditor_edit_Publication() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Editor_edit_Publications");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewArticles_or_Chapters_in_Publications() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Articles_or_Chapters_in_Publications");
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
