@@ -58,8 +58,11 @@ INSERT INTO Orders (order_id, num_of_copy, order_date, delivery_date, price, shi
 	(4003, 10, '2020-02-10', '2020-02-25', 10.00, 15.00, 2002, 1003);
 
 INSERT INTO Payments (pay_id, date, type, amount, person_id) VALUES
-	(NULL, '2020-04-01', 'one-time', -1000.00, 3001),
-	(NULL, '2020-04-01', 'one-time', -1000.00, 3002),
-	(NULL, '2020-04-01', 'one-time', -1200.00, 3003),
+	(NULL, '2020-04-01', 'salary', -1000.00, 3001),
+	(NULL, '2020-04-01', 'salary', -1000.00, 3002),
+	(NULL, '2020-04-01', 'salary', -1200.00, 3003),
 	(NULL, '2020-04-01', 'income', 630.00, 2001),
-	(NULL, '2020-04-01', 'income', 115.00, 2002);
+	(NULL, '2020-04-01', 'income', 115.00, 2002),
+	(NULL, '2020-01-02', 'shipping', -30.00, 1001),
+	(NULL, '2020-02-05', 'shipping', -15.00, 1001),
+	(NULL, '2020-02-10', 'shipping', -15.00, 1003);
