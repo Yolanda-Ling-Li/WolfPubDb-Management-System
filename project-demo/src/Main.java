@@ -459,31 +459,35 @@ public class Main {
 			//Calculate total revenue (since inception) per city, per distributor, and per location
 			if (selectedTask == 5) {
 				System.out.println();
+				System.out.println("Please enter a month number from 0 to 12");
+				Scanner scan = new Scanner(System.in);
+				int month = scan.nextInt();
+				System.out.println();
 				System.out.println("Total revenue per city");
-				DBActions.totalRevenuePerCity();
+				DBActions.totalRevenuePerCity(month);
 				System.out.println();
 				System.out.println("Total revenue per distributor");
-				DBActions.totalRevenuePerDistributor();
+				DBActions.totalRevenuePerDistributor(month);
 				System.out.println();
 				System.out.println("Total revenue per location");
-				DBActions.totalRevenuePerLocation();
+				DBActions.totalRevenuePerLocation(month);
 				System.out.println();
 			}
 			//Calculate total payments to the editors and authors, per time period and per work type (book authorship, article authorship, or editorial work
 			if (selectedTask == 6) {
 				System.out.println();
-				System.out.println("Total payments to the editors per time period");
-				DBActions.totalPaymentsEditorsPerTimePeriod();
+				System.out.println("Please enter a month number from 0 to 12");
+				Scanner scan = new Scanner(System.in);
+				int month = scan.nextInt();
 				System.out.println();
-				System.out.println("Total payments to the work type per time period");
-				DBActions.totalPaymentsEditorsPerWorkType();
+				System.out.println("Total payments to the editors in month " + month);
+				DBActions.totalPaymentsEditorsPerTimePeriod(month);
 				System.out.println();
-				System.out.println("Total payments to the authors per time period");
-				DBActions.totalPaymentsAuthorsPerTimePeriod();
+				System.out.println("Total payments to the authors in month " + month);
+				DBActions.totalPaymentsAuthorsPerTimePeriod(month);
 				System.out.println();
 			}
 		}
-		
 		scanner.close();
 		
 	}

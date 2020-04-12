@@ -598,11 +598,11 @@ public class DBActions {
 	public static void generateMonthlyReport(int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), person_id, pub_id, COUNT(*), SUM(price) FROM Orders WHERE MONTH(order_date) = %d GROUP BY pub_id, person_id;", month));
+					.executeQuery(String.format("SELECT MONTH(order_date), person_id, pub_id, num_of_copy, SUM(price) FROM Orders WHERE MONTH(order_date) = %d GROUP BY person_id;", month));
 			
-			System.out.println("MONTH(Order Date) | person_id | pub_id | COUNT(*) | SUM(price) ");
+			System.out.println("Month | Distributor id | Publication id | Number of copy | SUM of price ");
 			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getInt("pub_id") + " | " + result.getInt("COUNT(*)") + " | " + result.getFloat("SUM(price)"));	
+				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getInt("pub_id") + " | " + result.getInt("num_of_copy") + " | " + result.getFloat("SUM(price)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -614,7 +614,7 @@ public class DBActions {
 			result = statement
 					.executeQuery(String.format("SELECT MONTH(order_date), SUM(price) FROM Orders WHERE MONTH(order_date) = %d;", month));
 			
-			System.out.println("MONTH(order date) | SUM(price) ");
+			System.out.println("Month | SUM(price) ");
 			while (result.next()) {
 				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getFloat("SUM(price)"));	
 			}
@@ -626,11 +626,11 @@ public class DBActions {
 	public static void totalExpenses(int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), SUM(expense) FROM ( SELECT shipping_cost AS expense, order_date FROM Orders UNION ALL SELECT amount AS expense, date FROM Payments )AS Expenses WHERE MONTH(order_date) = %d;", month));
+					.executeQuery(String.format("SELECT MONTH(date), SUM(amount) FROM Payments WHERE (type='salary' OR 'shipping') AND MONTH(date) = %d;", month));
 			
-			System.out.println("MONTH(order date) | SUM(expense) ");
+			System.out.println("MONTH | Sum of shipping cost and salaries ");
 			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getFloat("SUM(expense)"));	
+				System.out.println(result.getInt("MONTH(date)") + " | " + result.getFloat("SUM(amount)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -651,54 +651,54 @@ public class DBActions {
 		}
 	}
 	
-	public static void totalRevenuePerCity() {
+	public static void totalRevenuePerCity(int month) {
 		try {
 			result = statement
-					.executeQuery("SELECT city, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id GROUP BY city;");
+					.executeQuery(String.format("SELECT MONTH(order_date), city, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id WHERE MONTH(order_date)=%d GROUP BY city;", month));
 			
-			System.out.println("city | SUM(price)");
+			System.out.println("Month, city | SUM(price)");
 			while (result.next()) {
-				System.out.println(result.getString("city") + " | " + result.getFloat("SUM(price)"));	
+				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getString("city") + " | " + result.getFloat("SUM(price)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalRevenuePerDistributor() {
+	public static void totalRevenuePerDistributor(int month) {
 		try {
 			result = statement
-					.executeQuery("SELECT Distributors.person_id, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id GROUP BY Distributors.person_id;");
+					.executeQuery(String.format("SELECT MONTH(order_date), Distributors.person_id, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id WHERE MONTH(order_date)=%d GROUP BY Distributors.person_id;", month));
 			
-			System.out.println(" person_id | SUM(price) ");
+			System.out.println("Month | person_id | SUM(price) ");
 			while (result.next()) {
-				System.out.println(result.getInt("person_id") + " | " + result.getFloat("SUM(price)"));	
+				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getFloat("SUM(price)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalRevenuePerLocation() {
+	public static void totalRevenuePerLocation(int month) {
 		try {
 			result = statement
-					.executeQuery("SELECT address, SUM(price) FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id GROUP BY address;");
+					.executeQuery(String.format("SELECT MONTH(order_date), address, SUM(price) FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id WHERE MONTH(order_date)=%d GROUP BY address;", month));
 			
-			System.out.println(" address | SUM(price) ");
+			System.out.println("Month | address | SUM(price) ");
 			while (result.next()) {
-				System.out.println(result.getString("address") + " | " + result.getFloat("SUM(price)"));	
+				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getString("address") + " | " + result.getFloat("SUM(price)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalPaymentsEditorsPerTimePeriod () {
+	public static void totalPaymentsEditorsPerTimePeriod(int month) {
 		try {
 			result = statement
-					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments INNER JOIN Editors ON Payments.person_id=Editors.person_id GROUP BY MONTH(Payments.date);");
+					.executeQuery(String.format("SELECT MONTH(Payments.date), SUM(amount) FROM Payments INNER JOIN Editors ON Payments.person_id=Editors.person_id AND Payments.type='salary' AND MONTH(Payments.date)=%d;", month));
 			
-			System.out.println(" MONTH(Payments.date) | SUM(amount)");
+			System.out.println("Month | SUM(amount) ");
 			while (result.next()) {
 				System.out.println(result.getInt("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
 			}
@@ -707,42 +707,14 @@ public class DBActions {
 		}
 	}
 	
-	public static void totalPaymentsEditorsPerWorkType() {
+	public static void totalPaymentsAuthorsPerTimePeriod(int month) {
 		try {
 			result = statement
-					.executeQuery("SELECT Editors.type, SUM(amount) FROM Payments INNER JOIN Editors ON Payments.person_id=Editors.person_id GROUP BY Editors.type;");
+					.executeQuery(String.format("SELECT MONTH(Payments.date), SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id AND Payments.type='salary' AND MONTH(Payments.date)=%d;", month));
 			
-			System.out.println(" type | SUM(amount) ");
+			System.out.println("Month | SUM(amount) ");
 			while (result.next()) {
-				System.out.println(result.getString("Editors.type") + " | " + result.getFloat("SUM(amount)"));	
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void totalPaymentsAuthorsPerTimePeriod() {
-		try {
-			result = statement
-					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY MONTH(Payments.date);");
-			
-			System.out.println(" MONTH(Payments.date) | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getString("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void totalPaymentsAuthorsPerWorkType() {
-		try {
-			result = statement
-					.executeQuery("SELECT Authors.type, SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY Authors.type;");
-			
-			System.out.println(" type | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getString("Authors.type") + " | " + result.getFloat("SUM(amount)"));	
+				System.out.println(result.getInt("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
