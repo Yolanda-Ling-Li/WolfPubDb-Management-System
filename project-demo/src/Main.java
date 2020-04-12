@@ -465,20 +465,14 @@ public class Main {
 			//Calculate total revenue (since inception) per city, per distributor, and per location
 			if (selectedTask == 5) {
 				System.out.println();
-				Scanner scan = new Scanner(System.in);
-				System.out.println("Please enter a year number (YYYY)");
-				int year = scan.nextInt();
-				System.out.println("Please enter a month number from 1 to 12");
-				int month = scan.nextInt();
-				System.out.println();
 				System.out.println("Total revenue per city");
-				DBActions.totalRevenuePerCity(year, month);
+				DBActions.totalRevenuePerCity();
 				System.out.println();
 				System.out.println("Total revenue per distributor");
-				DBActions.totalRevenuePerDistributor(year, month);
+				DBActions.totalRevenuePerDistributor();
 				System.out.println();
 				System.out.println("Total revenue per location");
-				DBActions.totalRevenuePerLocation(year, month);
+				DBActions.totalRevenuePerLocation();
 				System.out.println();
 			}
 			//Calculate total payments to the editors and authors, per time period and per work type (book authorship, article authorship, or editorial work

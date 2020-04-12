@@ -598,9 +598,10 @@ public class DBActions {
 	public static void generateMonthlyReport(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, person_id," +
-							" name, pub_id, title, SUM(num_of_copy), SUM(price) FROM Orders NATURAL JOIN Persons " +
-							"NATURAL JOIN Publications WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d " +
-							"GROUP BY person_id, pub_id;", month, year));
+					" name, pub_id, title, SUM(num_of_copy), SUM(price) AS total_price, SUM(price)+SUM(shipping_cost) " +
+					"AS total_cost FROM Orders NATURAL JOIN Persons NATURAL JOIN Publications " +
+					"WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d " +
+					"GROUP BY person_id, pub_id;", month, year));
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -610,9 +611,8 @@ public class DBActions {
 	
 	public static void totalRevenueofPublishingHouse(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
-							"SUM(price) FROM Orders WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d;", month, year));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
+					"SUM(price) AS total_price FROM Orders WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d;", month, year));
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -622,8 +622,8 @@ public class DBActions {
 	
 	public static void totalExpenses(int year, int month) {
 		try {
-			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) FROM Payments WHERE (type='salary' OR type='shipping') " +
-							"AND MONTH(date) = %d AND YEAR(date) = %d", month, year));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_expense " +
+					"FROM Payments WHERE (type='salary' OR type='shipping') AND MONTH(date) = %d AND YEAR(date) = %d", month, year));
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -633,8 +633,7 @@ public class DBActions {
 	
 	public static void totalDistributors() {
 		try {
-			result = statement
-					.executeQuery("SELECT COUNT(*) FROM Distributors;");
+			result = statement.executeQuery("SELECT COUNT(*) FROM Distributors;");
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -642,12 +641,11 @@ public class DBActions {
 		}
 	}
 	
-	public static void totalRevenuePerCity(int year, int month) {
+	public static void totalRevenuePerCity() {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, city, SUM(price) " +
-							"FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
-							"WHERE MONTH(order_date)=%d AND YEAR(order_date) GROUP BY city;", month, year));
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, city, " +
+					"SUM(price) AS total_price FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
+					"GROUP BY city;");
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -655,12 +653,11 @@ public class DBActions {
 		}
 	}
 	
-	public static void totalRevenuePerDistributor(int year, int month) {
+	public static void totalRevenuePerDistributor() {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, Distributors.person_id, SUM(price) " +
-							"FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
-							"WHERE MONTH(order_date)=%d AND YEAR(order_date) = %d GROUP BY Distributors.person_id;", month, year));
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
+					"Distributors.person_id, SUM(price) AS total_price FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
+					"GROUP BY Distributors.person_id;");
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -668,12 +665,10 @@ public class DBActions {
 		}
 	}
 	
-	public static void totalRevenuePerLocation(int year, int month) {
+	public static void totalRevenuePerLocation() {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, address, SUM(price) " +
-							"FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id " +
-							"WHERE MONTH(order_date)=%d AND YEAR(order_date) GROUP BY address;", month, year));
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, address, SUM(price) AS total_price " +
+					"FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id GROUP BY address;");
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -683,10 +678,9 @@ public class DBActions {
 	
 	public static void totalPaymentsEditorsPerTimePeriod(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(Payments.date), '-', MONTH(Payments.date)) AS month, SUM(amount) " +
-							"FROM Payments JOIN Editors ON Payments.person_id=Editors.person_id " +
-							"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(Payments.date), '-', MONTH(Payments.date)) AS month, " +
+					"SUM(amount) AS total_salary FROM Payments JOIN Editors ON Payments.person_id=Editors.person_id " +
+					"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -696,10 +690,9 @@ public class DBActions {
 	
 	public static void totalPaymentsAuthorsPerTimePeriod(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) " +
-							"FROM Payments JOIN Authors ON Payments.person_id=Authors.person_id " +
-							"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_salary " +
+					"FROM Payments JOIN Authors ON Payments.person_id=Authors.person_id " +
+					"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
 			
 			printResultSet(result);
 		} catch (SQLException e) {
