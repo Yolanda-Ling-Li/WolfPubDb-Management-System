@@ -308,6 +308,7 @@ public class Main {
 		
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
+				DBActions.viewDistributors();
 				String type = "distributor";
 				System.out.println("name: ");
 				String name = scanner.nextLine();
@@ -330,8 +331,10 @@ public class Main {
 				System.out.println("address: ");
 				String address = scanner.nextLine();
 				DBActions.enterNewDistributor(type, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 2) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you to want change? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("new name(Enter for not change): ");
@@ -355,13 +358,17 @@ public class Main {
 				System.out.println("new address(Enter for not change): ");
 				String address = scanner.nextLine();
 				DBActions.updateDistributor(person_id, name, gender, age, email, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 3) {
+				DBActions.viewDistributors();
 				System.out.println("which distributor do you want to delete? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				DBActions.deleteDistributor(person_id);
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 4) {
+				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
 				System.out.println("order_date: ");
@@ -377,11 +384,15 @@ public class Main {
 				System.out.println("pub_id: ");
 				Integer pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
+				DBActions.viewOrders();
 			}
 			if (selectedTask == 5) {
+				DBActions.viewOrders();
+				DBActions.viewDistributors();
 				System.out.println("which order do you want to bill? Please input id: ");
 				int order_id = Integer.parseInt(scanner.nextLine());
 				DBActions.billDistributorAnOrder(order_id);
+				DBActions.viewDistributors();
 			}
 		}
 		

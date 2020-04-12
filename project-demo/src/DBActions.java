@@ -64,7 +64,7 @@ public class DBActions {
 				if (i > 1) System.out.print(" | ");
 				System.out.print(rsmd.getColumnName(i));
 			}
-			System.out.println("\n- - - - - - - - - - - - - - - - - - - - - - - -");
+			System.out.println("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 			while (rs.next()) {
 				for (int i = 1; i <= columnsNumber; i++) {
 					if (i > 1) System.out.print(" | ");
@@ -348,6 +348,24 @@ public class DBActions {
 	public static void addPayment(int pay_id, String date, String type, float amount, String person_id) {
 		try {
 			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, '" + date + "', '" + type + "', " + amount + ", " + person_id +")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewDistributors() {
+		try {
+			result = statement.executeQuery("SELECT Persons.person_id,name,gender,age,email,phone_num,address,balance,contact_person,Distributors.type,city FROM Persons, Distributors WHERE Persons.person_id = Distributors.person_id;");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewOrders() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Orders;");
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
