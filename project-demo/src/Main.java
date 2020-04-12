@@ -94,10 +94,10 @@ public class Main {
 			if (selectedTask == 4) {
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
-				DBActions.viewPublication(person_id);
+				DBActions.viewPublicationByEditor(person_id);
 			}
 			if (selectedTask == 5) {
-				System.out.println("1. add 2. update 3. delete");
+				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
 				if (selected == 1) {
 					System.out.println("date: ");
@@ -112,29 +112,11 @@ public class Main {
 					int pub_id = Integer.parseInt(scanner.nextLine());
 					DBActions.addArticleToPublication(date, text, title, topic, pub_id);
 				}
-				if (selected == 2) {
-					System.out.println("art_id: ");
-					int art_id = Integer.parseInt(scanner.nextLine());
-					System.out.println("title: ");
-					String title = scanner.nextLine();
-					System.out.println("text: ");
-					String text = scanner.nextLine();
-					System.out.println("topic: ");
-					String topic = scanner.nextLine();
-					System.out.println("date: ");
-					String date = scanner.nextLine();
-					DBActions.updateArticleOrChapter(art_id, 
-							title.isEmpty() ? null : title, 
-							text.isEmpty() ? null : text, 
-							topic.isEmpty() ? null : topic, 
-							date.isEmpty() ? null : date);
-				}
 				if (selected == 3) {
 					System.out.println("art_id: ");
-					int art_id = Integer.parseInt(scanner.nextLine());
+					String art_id = scanner.nextLine();
 					DBActions.deleteArticleToPublication(art_id);
 				}
-
 			}
 		}
 		
@@ -155,6 +137,7 @@ public class Main {
 					System.out.println("topic: ");
 					String topic = scanner.nextLine();
 					DBActions.addBook(title, date, edition, ISBN, topic);
+					DBActions.viewBooks();
 				} else if (newPub.equals("I")) {
 					DBActions.viewPeriodicals();
 					System.out.println("Is it for any of the periodicals above? (Y/N): ");
@@ -179,6 +162,7 @@ public class Main {
 					System.out.println("date(YYYY-MM-DD): ");
 					String date = scanner.nextLine();
 					DBActions.addIssue(title, date, period_id);
+					DBActions.viewIssues();
 				}
 			}
 			if (selectedTask == 2) {
@@ -207,6 +191,7 @@ public class Main {
 					} else if (op.equals("D")) {
 						DBActions.deletePublication(pub_id);
 					}
+					DBActions.viewBooks();
 				} else if (pub.equals("I")) {
 					DBActions.viewIssues();
 					System.out.println("Enter the pub_id of the issue you want to update/delete: ");
@@ -228,7 +213,22 @@ public class Main {
 					} else if (op.equals("D")) {
 						DBActions.deletePublication(pub_id);
 					}
+					DBActions.viewIssues();
 				}
+			}
+			if (selectedTask == 3) {
+				System.out.println("title: ");
+				String title = scanner.nextLine();
+				System.out.println("text: ");
+				String text = scanner.nextLine();
+				System.out.println("topic: ");
+				String topic = scanner.nextLine();
+				System.out.println("date: ");
+				String date = scanner.nextLine();
+				DBActions.viewPublications();
+				System.out.println("pub_id: ");
+				String pub_id = scanner.nextLine();
+				//DBActions.addArticleChapter(title, text, topic, date, pub_id);
 			}
 			if (selectedTask == 3) {
 				//Enter/update an article or chapter: title, author's name, topic, text, and date
@@ -241,18 +241,17 @@ public class Main {
 				if (op.equals("U")) {
 					System.out.println("title (press enter if no change): ");
 					String title = scanner.nextLine();
-					System.out.println("date(YYYY-MM-DD) (press enter if no change): ");
-					String date = scanner.nextLine();
-					System.out.println("edition (press enter if no change): ");
-					String edition = scanner.nextLine();
-					System.out.println("ISBN (press enter if no change): ");
-					String ISBN = scanner.nextLine();
+					System.out.println("text (press enter if no change): ");
+					String text = scanner.nextLine();
 					System.out.println("topic (press enter if no change): ");
 					String topic = scanner.nextLine();
-					DBActions.updateBook(art_id, edition, ISBN, topic, title, date);
+					System.out.println("date(YYYY-MM-DD) (press enter if no change): ");
+					String date = scanner.nextLine();
+					DBActions.updateArticleChapter(art_id, title, text, topic, date);
 				} else if (op.equals("D")) {
-					DBActions.deletePublication(art_id);
+					DBActions.deleteArticleToPublication(art_id);
 				}
+
 			}
 			if (selectedTask == 4) {
 				//Find books and articles by topic, date, author's name

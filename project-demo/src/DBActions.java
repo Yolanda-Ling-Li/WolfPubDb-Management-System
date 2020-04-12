@@ -89,7 +89,7 @@ public class DBActions {
 		}
 	}
 	
-	public static void viewPublication(int person_id) {
+	public static void viewPublicationByEditor(int person_id) {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
 			while (result.next()) {
@@ -104,6 +104,15 @@ public class DBActions {
 	public static void assignEditorToPublication(int person_id, int pub_id) {
 		try {
 			statement.executeUpdate(String.format("INSERT INTO Editor_edit_Publications VALUES (%d, %d)", person_id, pub_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewPublications() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Publications");
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +191,7 @@ public class DBActions {
 		}
 	}
 	
-	public static void deleteArticleToPublication(int art_id) {
+	public static void deleteArticleToPublication(String art_id) {
 		try {
 			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
 		} catch (SQLException e) {
@@ -273,18 +282,18 @@ public class DBActions {
 		}
 	}
 	
-	public static void updateArticleOrChapter(int art_id, String title, String text, String topic, String date) {
+	public static void updateArticleChapter(String art_id, String title, String text, String topic, String date) {
 		try {
-			if (title != null) {
+			if (!title.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
 			}
-			if (text != null) {
+			if (!text.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET text='" + text + "' WHERE art_id=" + art_id);
 			}
-			if (topic != null) {
+			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET topic='" + topic + "' WHERE art_id=" + art_id);
 			}
-			if (date != null) {
+			if (!date.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
 			}
 		} catch (SQLException e) {
