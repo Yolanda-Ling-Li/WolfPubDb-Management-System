@@ -261,8 +261,11 @@ public class DBActions {
 	
 	public static void addBook(String title, String date, String edition, String ISBN, String topic) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
 			statement.executeUpdate("INSERT INTO Books VALUES(LAST_INSERT_ID()," + edition + ",'" + ISBN + "', '" + topic + "')");
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -270,8 +273,11 @@ public class DBActions {
 	
 	public static void addIssue(String title, String date, String period_id) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL, '" + title + "', '" + date + "')");
 			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -279,6 +285,7 @@ public class DBActions {
 	
 	public static void updateBook(String pub_id, String edition, String ISBN, String topic, String title, String date) {
 		try {
+			connection.setAutoCommit(false);
 			if (!edition.equals("")) {
 				statement.executeUpdate("UPDATE Books SET edition=" + edition + " WHERE pub_id=" + pub_id);
 			}
@@ -294,13 +301,16 @@ public class DBActions {
 			if (!date.equals("")) {
 				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
 			}
-			} catch (SQLException e) {
+			connection.commit();
+			connection.setAutoCommit(true);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void updateIssue(String pub_id, String title, String date, String type, String periodicity, String topic) {
 		try {
+			connection.setAutoCommit(false);
 			if (!title.equals("")) {
 				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
@@ -316,6 +326,8 @@ public class DBActions {
 			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Periodicals SET topic='" + topic + "' WHERE period_id=(SELECT period_id FROM Issues WHERE pub_id=" + pub_id + ")");
 			}
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -331,12 +343,15 @@ public class DBActions {
 	
 	public static void updatePublication(int pub_id, String title, String date) {
 		try {
+			connection.setAutoCommit(false);
 			if (title != null) {
 				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
 			if (date != null) {
 				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
 			}
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -344,6 +359,7 @@ public class DBActions {
 	
 	public static void updateArticleChapter(String art_id, String date, String text, String title, String topic) {
 		try {
+			connection.setAutoCommit(false);
 			if (!date.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
 			}
@@ -356,34 +372,8 @@ public class DBActions {
 			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET topic='" + topic + "' WHERE art_id=" + art_id);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void updatePerson(int person_id, String name, String type, String gender, Integer age, String email, String phone_num, String address) {
-		try {
-			if (name != null) {
-				statement.executeUpdate("UPDATE Persons SET name='" + name + "' WHERE person_id=" + person_id);
-			}
-			if (type != null) {
-				statement.executeUpdate("UPDATE Persons SET type='" + type + "' WHERE person_id=" + person_id);
-			}
-			if (gender != null) {
-				statement.executeUpdate("UPDATE Persons SET gender='" + gender + "' WHERE person_id=" + person_id);
-			}
-			if (age != null) {
-				statement.executeUpdate("UPDATE Persons SET age='" + age + "' WHERE person_id=" + person_id);
-			}
-			if (email != null) {
-				statement.executeUpdate("UPDATE Persons SET email='" + email + "' WHERE person_id=" + person_id);
-			}
-			if (phone_num != null) {
-				statement.executeUpdate("UPDATE Persons SET phone_num='" + phone_num + "' WHERE person_id=" + person_id);
-			}
-			if (address != null) {
-				statement.executeUpdate("UPDATE Persons SET address='" + address + "' WHERE person_id=" + person_id);
-			}			
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
