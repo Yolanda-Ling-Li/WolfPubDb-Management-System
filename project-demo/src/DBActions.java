@@ -634,7 +634,7 @@ public class DBActions {
 	public static void totalDistributors() {
 		try {
 			result = statement
-					.executeQuery("SELECT COUNT(person_id) FROM Distributors;");
+					.executeQuery("SELECT COUNT(*) FROM Distributors;");
 			
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -645,7 +645,7 @@ public class DBActions {
 	public static void totalRevenuePerCity(int year, int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, city, SUM(price) " +
+					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, city, SUM(price) " +
 							"FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
 							"WHERE MONTH(order_date)=%d AND YEAR(order_date) GROUP BY city;", month, year));
 			
@@ -658,7 +658,7 @@ public class DBActions {
 	public static void totalRevenuePerDistributor(int year, int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, Distributors.person_id, SUM(price) " +
+					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, Distributors.person_id, SUM(price) " +
 							"FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
 							"WHERE MONTH(order_date)=%d AND YEAR(order_date) = %d GROUP BY Distributors.person_id;", month, year));
 			
@@ -671,14 +671,11 @@ public class DBActions {
 	public static void totalRevenuePerLocation(int year, int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, address, SUM(price) " +
+					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, address, SUM(price) " +
 							"FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id " +
 							"WHERE MONTH(order_date)=%d AND YEAR(order_date) GROUP BY address;", month, year));
 			
-			System.out.println("Month | address | SUM(price) ");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getString("address") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -687,14 +684,11 @@ public class DBActions {
 	public static void totalPaymentsEditorsPerTimePeriod(int year, int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) " +
+					.executeQuery(String.format("SELECT CONCAT(YEAR(Payments.date), '-', MONTH(Payments.date)) AS month, SUM(amount) " +
 							"FROM Payments JOIN Editors ON Payments.person_id=Editors.person_id " +
 							"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
 			
-			System.out.println("Month | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
