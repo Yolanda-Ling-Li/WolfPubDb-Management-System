@@ -626,7 +626,7 @@ public class DBActions {
 	public static void totalExpenses(int month) {
 		try {
 			result = statement
-					.executeQuery(String.format("SELECT MONTH(date), SUM(amount) FROM Payments WHERE (type='salary' OR 'shipping') AND MONTH(date) = %d;", month));
+					.executeQuery(String.format("SELECT MONTH(date), SUM(amount) FROM Payments WHERE (type='salary' OR type='shipping') AND MONTH(date) = %d;", month));
 			
 			System.out.println("MONTH | Sum of shipping cost and salaries ");
 			while (result.next()) {
