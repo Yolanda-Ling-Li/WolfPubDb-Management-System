@@ -597,8 +597,7 @@ public class DBActions {
 	
 	public static void generateMonthlyReport(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, person_id," +
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, person_id," +
 							" name, pub_id, title, SUM(num_of_copy), SUM(price) FROM Orders NATURAL JOIN Persons " +
 							"NATURAL JOIN Publications WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d " +
 							"GROUP BY person_id, pub_id;", month, year));
@@ -623,8 +622,7 @@ public class DBActions {
 	
 	public static void totalExpenses(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) FROM Payments WHERE (type='salary' OR type='shipping') " +
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) FROM Payments WHERE (type='salary' OR type='shipping') " +
 							"AND MONTH(date) = %d AND YEAR(date) = %d", month, year));
 			
 			printResultSet(result);
