@@ -388,7 +388,7 @@ public class DBActions {
 	
 	public static void viewDistributors() {
 		try {
-			result = statement.executeQuery("SELECT Persons.person_id,name,gender,age,email,phone_num,address,balance,contact_person,Distributors.type,city FROM Persons, Distributors WHERE Persons.person_id = Distributors.person_id;");
+			result = statement.executeQuery("SELECT Persons.person_id,name,phone_num,address,balance,contact_person,Distributors.type,city FROM Persons, Distributors WHERE Persons.person_id = Distributors.person_id;");
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -403,11 +403,29 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void viewPublications() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Publications ;");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void viewPayments() {
+		try {
+			result = statement.executeQuery("SELECT * FROM Payments;");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
-	public static void enterNewDistributor(String type, String name, String gender, Integer age, String email, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
+	public static void enterNewDistributor(String type, String name, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
 			connection.setAutoCommit(false);
-			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, '%s', '%s', '%s', %d, '%s', '%s', '%s');", type, name, gender, age, email, phone_num, address));
+			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, '%s', '%s', NULL, NULL, NULL, '%s', '%s');", type, name, phone_num, address));
 			statement.executeUpdate(String.format("INSERT INTO Distributors VALUES (LAST_INSERT_ID(), %f, '%s', '%s', '%s');", balance, contact_person, d_type, city));
 			connection.commit();
 			connection.setAutoCommit(true); 
@@ -423,20 +441,11 @@ public class DBActions {
 		}
 	}
 	
-	public static void updateDistributor(int person_id, String name, String gender, String age, String email, String balance, String contact_person, String phone_num, String d_type, String city, String address) {
+	public static void updateDistributor(int person_id, String name, String balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
 			connection.setAutoCommit(false);
 			if (!name.equals("")) {
 				statement.executeUpdate(String.format("UPDATE Persons SET name = '%s' WHERE person_id =%d;", name, person_id));
-			}
-			if (!gender.equals("")) {
-				statement.executeUpdate(String.format("UPDATE Persons SET gender = '%s' WHERE person_id =%d;", gender, person_id));
-			}
-			if (!age.equals("")) {
-				statement.executeUpdate(String.format("UPDATE Persons SET age = %d WHERE person_id =%d;", Integer.parseInt(age), person_id));
-			}
-			if (!email.equals("")) {
-				statement.executeUpdate(String.format("UPDATE Persons SET email = '%s' WHERE person_id =%d;", email, person_id));
 			}
 			if (!phone_num.equals("")) {
 				statement.executeUpdate(String.format("UPDATE Persons SET phone_num = '%s' WHERE person_id =%d;", phone_num, person_id));
@@ -480,9 +489,20 @@ public class DBActions {
 
 	public static void inputOrderByDistributor(int num_of_copy, String order_date, String delivery_date, float price, float shipping_cost, int person_id, int pub_id) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate(String.format("INSERT INTO Orders VALUES(NULL, %d, '%s', '%s', %f, %f, %d, %d);", num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id));
+			statement.executeUpdate(String.format("INSERT INTO Payments VALUES (NULL, '%s', 'shipping', %f, %d);", order_date, -shipping_cost, person_id));
+			connection.commit();
+			connection.setAutoCommit(true); 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
@@ -492,6 +512,25 @@ public class DBActions {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
+	}
+	
+	public static void changeBalance(String date, Float amount, int person_id) {
+		try {
+			connection.setAutoCommit(false);
+			statement.executeUpdate(String.format("INSERT INTO Payments VALUES (NULL, '%s', 'income', %f, %d);", date, amount, person_id));
+			statement.executeUpdate(String.format("UPDATE Distributors SET balance = balance-%f WHERE person_id =%d;", amount, person_id));
+			connection.commit();
+			connection.setAutoCommit(true); 
+		} catch (SQLException e) {
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public static void generateMonthlyReport(int month) {
