@@ -75,6 +75,7 @@ public class DBActions {
 				}
 				System.out.println();
 			}
+			System.out.println();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -120,7 +121,28 @@ public class DBActions {
 
 	public static void viewPeriodicals() {
 		try {
+			System.out.println("Periodicals Information");
 			result = statement.executeQuery("SELECT * FROM Periodicals");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewPaymentsSalary(String person_id) {
+		try {
+			if (person_id.equals("")) {
+				System.out.println("Payments: Salary Information");
+				result = statement.executeQuery("SELECT pay_id, date, Payments.type, amount, " +
+						"name, Persons.type FROM Payments JOIN Persons " +
+						"on Payments.person_id = Persons.person_id WHERE Payments.type = 'salary'");
+			} else {
+				System.out.println("Payments: Salary Information of person_id" + person_id);
+				result = statement.executeQuery("SELECT pay_id, date, Payments.type, amount, " +
+						"name, Persons.type FROM Payments JOIN Persons " +
+						"on Payments.person_id = Persons.person_id WHERE Payments.type = 'salary'" +
+						" AND Payments.person_id = " + person_id);
+			}
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -129,6 +151,7 @@ public class DBActions {
 
 	public static void viewEditorsAuthors() {
 		try {
+			System.out.println("Editors and Authors Information");
 			result = statement.executeQuery("(SELECT Persons.person_id AS person_id, name, gender, age, email, " +
 					"CONCAT(Editors.type, ' ', Persons.type) AS type FROM Persons JOIN Editors ON Persons.person_id = Editors.person_id)\n" +
 					"UNION (SELECT Persons.person_id AS person_id, name, gender, age, email, " +
@@ -141,6 +164,7 @@ public class DBActions {
 
 	public static void viewUnclaimedPayments(String person_id) {
 		try {
+			System.out.println("Unclaimed Payments of person_id:" + person_id);
 			result = statement.executeQuery("SELECT * FROM Payments WHERE person_id=" + person_id + " AND date IS NULL");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -150,6 +174,7 @@ public class DBActions {
 
 	public static void viewBooks() {
 		try {
+			System.out.println("Books Information");
 			result = statement.executeQuery("SELECT * FROM Books NATURAL JOIN Publications");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -159,6 +184,7 @@ public class DBActions {
 
 	public static void viewIssues() {
 		try {
+			System.out.println("Issues Information");
 			result = statement.executeQuery("SELECT * FROM Issues NATURAL JOIN Publications NATURAL JOIN Periodicals");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -168,6 +194,7 @@ public class DBActions {
 
 	public static void viewArticlesChapters() {
 		try {
+			System.out.println("Articles/Chapters Information");
 			result = statement.executeQuery("SELECT art_id, title, name AS author_name, topic, date, text FROM Articles_Chapters NATURAL JOIN Author_write_Articles_or_Chapters NATURAL JOIN Persons");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -178,6 +205,14 @@ public class DBActions {
 	public static void addPeriodical(String type, String periodicity, String topic) {
 		try {
 			statement.executeUpdate("INSERT INTO Periodicals VALUES(NULL,'" + type + "', '" + periodicity + "', '" + topic + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addArticleChapter(String date, String text, String title, String topic) {
+		try {
+			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES (NULL, " + date + ", " + text + ", " + title + ", " + topic + ")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -199,7 +234,7 @@ public class DBActions {
 		}
 	}
 
-	public static void deleteArticle(String art_id) {
+	public static void deleteArticleChapter(String art_id) {
 		try {
 			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
 		} catch (SQLException e) {
@@ -237,7 +272,7 @@ public class DBActions {
 				statement.executeUpdate("UPDATE Books SET topic='" + topic + "' WHERE pub_id=" + pub_id);
 			}
 			if (!title.equals("")) {
-				statement.executeUpdate("UPDATE Publications SET title='" + topic + "' WHERE pub_id=" + pub_id);
+				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
 			if (!date.equals("")) {
 				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
@@ -290,19 +325,19 @@ public class DBActions {
 		}
 	}
 	
-	public static void updateArticleChapter(String art_id, String title, String text, String topic, String date) {
+	public static void updateArticleChapter(String art_id, String date, String text, String title, String topic) {
 		try {
-			if (!title.equals("")) {
-				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
+			if (!date.equals("")) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
 			}
 			if (!text.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET text='" + text + "' WHERE art_id=" + art_id);
 			}
+			if (!title.equals("")) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
+			}
 			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET topic='" + topic + "' WHERE art_id=" + art_id);
-			}
-			if (!date.equals("")) {
-				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -385,19 +420,22 @@ public class DBActions {
 		}
 	}
 	
-	public static void addPayment(String type, String amount, String person_id) {
+	public static void addPayment(String amount, String person_id) {
 		try {
-			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, '" + type + "', " + amount + ", " + person_id +")");
+			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, 'salary', -" + amount + ", " + person_id +")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void claimPayment(String person_id) {
+	public static void claimPayment(String pay_id, String person_id) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate today = LocalDate.now();
 		try {
-			statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE person_id=" + person_id + " AND date is NULL");
+			if (pay_id.equals(""))
+				statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE person_id=" + person_id + " AND date IS NULL");
+			else
+				statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE pay_id=" + pay_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

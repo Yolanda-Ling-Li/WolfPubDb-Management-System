@@ -24,7 +24,8 @@ public class Main {
 		List<String> op2Tasks = new ArrayList<String>();
 		op2Tasks.add("Enter a new book edition or new issue of a publication");
 		op2Tasks.add("Update, delete a book edition or publication issue");
-		op2Tasks.add("Enter/update an article or chapter: title, author's name, topic, text, and date");
+		op2Tasks.add("Enter an article or chapter");
+		op2Tasks.add("Update, delete an article or chapter: title, author's name, topic, text, and date");
 		op2Tasks.add("Find books and articles by topic, date, author's name");
 		op2Tasks.add("Enter payment for author or editor");
 		op2Tasks.add("Claim payment for author or editor");
@@ -119,9 +120,11 @@ public class Main {
 		if (selectedOperation == 2) {
 			if (selectedTask == 1) {
 				//Enter a new book edition or new issue of a publication
-				System.out.println("Is it a new Book or new Issue? (B/I): ");
-				String newPub = scanner.nextLine();
-				if (newPub.equals("B")) {
+				System.out.println("1. New Book 2. New Issue: ");
+				int newPub = Integer.parseInt(scanner.nextLine());
+				if (newPub == 1) {
+					DBActions.viewBooks();
+					System.out.println("Adding a new Book...");
 					System.out.println("title: ");
 					String title = scanner.nextLine();
 					System.out.println("date(YYYY-MM-DD): ");
@@ -134,23 +137,24 @@ public class Main {
 					String topic = scanner.nextLine();
 					DBActions.addBook(title, date, edition, ISBN, topic);
 					DBActions.viewBooks();
-				} else if (newPub.equals("I")) {
+				} else if (newPub == 2) {
 					DBActions.viewPeriodicals();
-					System.out.println("Is it for any of the periodicals above? (Y/N): ");
-					if (scanner.nextLine().equals("N")) {
-						System.out.println("Do you want to add a new periodical? (Y/N): ");
-						if (scanner.nextLine().equals("Y")) {
-							System.out.println("type: ");
-							String type = scanner.nextLine();
-							System.out.println("periodicity: ");
-							String periodicity = scanner.nextLine();
-							System.out.println("topic: ");
-							String topic = scanner.nextLine();
-							DBActions.addPeriodical(type, periodicity, topic);
-						}
+					System.out.println("The new issue is for 1. Existing Periodical 2. New Periodical.");
+					int period = Integer.parseInt(scanner.nextLine());
+					if (period == 2) {
+						System.out.println("Adding a new Periodical...");
+						System.out.println("type: ");
+						String type = scanner.nextLine();
+						System.out.println("periodicity: ");
+						String periodicity = scanner.nextLine();
+						System.out.println("topic: ");
+						String topic = scanner.nextLine();
+						DBActions.addPeriodical(type, periodicity, topic);
+						DBActions.viewPeriodicals();
 					}
-					DBActions.viewPeriodicals();
-					System.out.println("Now, add your new Issue.");
+					System.out.println();
+					DBActions.viewIssues();
+					System.out.println("Adding a new Issue...");
 					System.out.println("period_id: ");
 					String period_id = scanner.nextLine();
 					System.out.println("title: ");
@@ -164,15 +168,15 @@ public class Main {
 			if (selectedTask == 2) {
 				//Update, delete a book edition or publication issue
 
-				System.out.println("Do you want to update/delete a Book or an Issue? (B/I): ");
-				String pub = scanner.nextLine();
-				if (pub.equals("B")) {
+				System.out.println("Update/delete 1. a Book 2. an Issue.");
+				int pub = Integer.parseInt(scanner.nextLine());
+				if (pub == 1) {
 					DBActions.viewBooks();
 					System.out.println("Enter the pub_id of the book you want to update/delete: ");
 					String pub_id = scanner.nextLine();
-					System.out.println("Do you want to update or delete it? (U/D): ");
-					String op = scanner.nextLine();
-					if (op.equals("U")) {
+					System.out.println("1. Update it 2. Delete it");
+					int op = Integer.parseInt(scanner.nextLine());
+					if (op == 1) {
 						System.out.println("title (press enter if no change): ");
 						String title = scanner.nextLine();
 						System.out.println("date(YYYY-MM-DD) (press enter if no change): ");
@@ -184,17 +188,17 @@ public class Main {
 						System.out.println("topic (press enter if no change): ");
 						String topic = scanner.nextLine();
 						DBActions.updateBook(pub_id, edition, ISBN, topic, title, date);
-					} else if (op.equals("D")) {
+					} else if (op == 2) {
 						DBActions.deletePublication(pub_id);
 					}
 					DBActions.viewBooks();
-				} else if (pub.equals("I")) {
+				} else if (pub == 2) {
 					DBActions.viewIssues();
 					System.out.println("Enter the pub_id of the issue you want to update/delete: ");
 					String pub_id = scanner.nextLine();
-					System.out.println("Do you want to update or delete it? (U/D): ");
-					String op = scanner.nextLine();
-					if (op.equals("U")) {
+					System.out.println("1. Update it 2. Delete it");
+					int op = Integer.parseInt(scanner.nextLine());
+					if (op == 1) {
 						System.out.println("title (press enter if no change): ");
 						String title = scanner.nextLine();
 						System.out.println("date(YYYY-MM-DD) (press enter if no change): ");
@@ -206,87 +210,89 @@ public class Main {
 						System.out.println("topic (press enter if no change): ");
 						String topic = scanner.nextLine();
 						DBActions.updateIssue(pub_id, title, date, type, periodicity, topic);
-					} else if (op.equals("D")) {
+					} else if (op == 2) {
 						DBActions.deletePublication(pub_id);
 					}
 					DBActions.viewIssues();
 				}
 			}
 			if (selectedTask == 3) {
-				System.out.println("title: ");
-				String title = scanner.nextLine();
+				//Enter an article or chapter
+				DBActions.viewArticlesChapters();
+				System.out.println("Adding a new Article/Chapter...");
+				System.out.println("date (YYYY-MM-DD): ");
+				String date = scanner.nextLine();
 				System.out.println("text: ");
 				String text = scanner.nextLine();
+				System.out.println("title: ");
+				String title = scanner.nextLine();
 				System.out.println("topic: ");
 				String topic = scanner.nextLine();
-				System.out.println("date: ");
-				String date = scanner.nextLine();
 				DBActions.viewPublications();
-				System.out.println("pub_id: ");
-				String pub_id = scanner.nextLine();
-				//DBActions.addArticleChapter(title, text, topic, date, pub_id);
+				DBActions.addArticleChapter(date, text, title, topic);
+				DBActions.viewArticlesChapters();
 			}
-			if (selectedTask == 3) {
-				//Enter/update an article or chapter: title, author's name, topic, text, and date
+			if (selectedTask == 4) {
+				//Update, delete an article or chapter: title, author's name, topic, text, and date
 
 				DBActions.viewArticlesChapters();
 				System.out.println("Enter the art_id of the article/chapter you want to update/delete: ");
 				String art_id = scanner.nextLine();
-				System.out.println("Do you want to update or delete it? (U/D): ");
-				String op = scanner.nextLine();
-				if (op.equals("U")) {
-					System.out.println("title (press enter if no change): ");
-					String title = scanner.nextLine();
+				System.out.println("1. Update it 2. Delete it");
+				int op = Integer.parseInt(scanner.nextLine());
+				if (op == 1) {
+					System.out.println("date (YYYY-MM-DD) (press enter if no change): ");
+					String date = scanner.nextLine();
 					System.out.println("text (press enter if no change): ");
 					String text = scanner.nextLine();
+					System.out.println("title (press enter if no change): ");
+					String title = scanner.nextLine();
 					System.out.println("topic (press enter if no change): ");
 					String topic = scanner.nextLine();
-					System.out.println("date(YYYY-MM-DD) (press enter if no change): ");
-					String date = scanner.nextLine();
-					DBActions.updateArticleChapter(art_id, title, text, topic, date);
-				} else if (op.equals("D")) {
-					DBActions.deleteArticle(art_id);
+					DBActions.updateArticleChapter(art_id, date, text, title, topic);
+				} else if (op == 2) {
+					DBActions.deleteArticleChapter(art_id);
 				}
-
+				DBActions.viewArticlesChapters();
 			}
-			if (selectedTask == 4) {
+			if (selectedTask == 5) {
 				//Find books and articles by topic, date, author's name
 
-				System.out.println("Do you want to find a Book or an Article/Chapter? (B/A): ");
-				String pub = scanner.nextLine();
+				System.out.println("Find 1. a Book 2. an Article/Chapter");
+				int pub = Integer.parseInt(scanner.nextLine());
 				System.out.println("topic (press enter if not used): ");
 				String topic = scanner.nextLine();
 				System.out.println("date(YYYY-MM-DD) (press enter if not used): ");
 				String date = scanner.nextLine();
 				System.out.println("author's name (press enter if not used): ");
 				String name = scanner.nextLine();
-				if (pub.equals("B")) {
+				if (pub == 1) {
 					DBActions.searchBooks(topic, date, name);
-				} else if (pub.equals("A")) {
+				} else if (pub == 2) {
 					DBActions.searchArticles(topic, date, name);
 				}
 			}
-			if (selectedTask == 5) {
+			if (selectedTask == 6) {
 				//Enter payment for author or editor
+				DBActions.viewPaymentsSalary("");
 				DBActions.viewEditorsAuthors();
 				System.out.println("Enter the person_id of the addressee you want to pay: ");
 				String person_id = scanner.nextLine();
-				System.out.println("Enter the type of payment (one-time/monthly): ");
-				String type = scanner.nextLine();
 				System.out.println("Enter the amount of payment: ");
 				String amount = scanner.nextLine();
-				DBActions.addPayment(type, amount, person_id);
+				DBActions.addPayment(amount, person_id);
+				DBActions.viewPaymentsSalary("");
 			}
-			if (selectedTask == 6) {
+			if (selectedTask == 7) {
 				//Claim payment for author or editor
 				DBActions.viewEditorsAuthors();
 				System.out.println("Enter your person_id to claim payments: ");
 				String person_id = scanner.nextLine();
 				DBActions.viewUnclaimedPayments(person_id);
-				System.out.println("Are you sure you want to claim all of the payments above? (Y/N): ");
-				String ans = scanner.nextLine();
-				if (ans.equals("Y"))
-					DBActions.claimPayment(person_id);
+				System.out.println("Enter the pay_id of the payment you want to claim (press enter to claim all of above): ");
+				String pay_id = scanner.nextLine();
+				DBActions.claimPayment(pay_id, person_id);
+				DBActions.viewPaymentsSalary(person_id);
 			}
 		}
 		
