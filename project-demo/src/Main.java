@@ -426,30 +426,36 @@ public class Main {
 		if (selectedOperation == 4) {
 			//Generate monthly reports: number and total price of copies of each publication bought per distributor per month
 			if (selectedTask == 1) {
-				System.out.println("Please enter a month number from 0 to 12");
 				Scanner scan = new Scanner(System.in);
+				System.out.println("Please enter a year number (YYYY)");
+				int year = scan.nextInt();
+				System.out.println("Please enter a month number from 1 to 12");
 				int month = scan.nextInt();
 				System.out.println();
 				System.out.println("Monthly Report");
-				DBActions.generateMonthlyReport(month);
+				DBActions.generateMonthlyReport(year, month);
 			}
 			//total revenue of the publishing house
 			if (selectedTask == 2) {
-				System.out.println("Please enter a month number from 0 to 12");
 				Scanner scan = new Scanner(System.in);
+				System.out.println("Please enter a year number (YYYY)");
+				int year = scan.nextInt();
+				System.out.println("Please enter a month number from 1 to 12");
 				int month = scan.nextInt();
 				System.out.println();
 				System.out.println("Total revenue of the publishing house");
-				DBActions.totalRevenueofPublishingHouse(month);
+				DBActions.totalRevenueofPublishingHouse(year, month);
 			}
 			//total expenses (i.e., shipping costs and salaries
 			if (selectedTask == 3) {
-				System.out.println("Please enter a month number from 0 to 12");
 				Scanner scan = new Scanner(System.in);
+				System.out.println("Please enter a year number (YYYY)");
+				int year = scan.nextInt();
+				System.out.println("Please enter a month number from 1 to 12");
 				int month = scan.nextInt();
 				System.out.println();
 				System.out.println("Total expenses (i.e., shipping costs and salaries).");
-				DBActions.totalExpenses(month);
+				DBActions.totalExpenses(year, month);
 			}
 			//Calculate the total current number of distributors
 			if (selectedTask == 4) {
@@ -459,32 +465,36 @@ public class Main {
 			//Calculate total revenue (since inception) per city, per distributor, and per location
 			if (selectedTask == 5) {
 				System.out.println();
-				System.out.println("Please enter a month number from 0 to 12");
 				Scanner scan = new Scanner(System.in);
+				System.out.println("Please enter a year number (YYYY)");
+				int year = scan.nextInt();
+				System.out.println("Please enter a month number from 1 to 12");
 				int month = scan.nextInt();
 				System.out.println();
 				System.out.println("Total revenue per city");
-				DBActions.totalRevenuePerCity(month);
+				DBActions.totalRevenuePerCity(year, month);
 				System.out.println();
 				System.out.println("Total revenue per distributor");
-				DBActions.totalRevenuePerDistributor(month);
+				DBActions.totalRevenuePerDistributor(year, month);
 				System.out.println();
 				System.out.println("Total revenue per location");
-				DBActions.totalRevenuePerLocation(month);
+				DBActions.totalRevenuePerLocation(year, month);
 				System.out.println();
 			}
 			//Calculate total payments to the editors and authors, per time period and per work type (book authorship, article authorship, or editorial work
 			if (selectedTask == 6) {
 				System.out.println();
-				System.out.println("Please enter a month number from 0 to 12");
 				Scanner scan = new Scanner(System.in);
+				System.out.println("Please enter a year number (YYYY)");
+				int year = scan.nextInt();
+				System.out.println("Please enter a month number from 1 to 12");
 				int month = scan.nextInt();
 				System.out.println();
-				System.out.println("Total payments to the editors in month " + month);
-				DBActions.totalPaymentsEditorsPerTimePeriod(month);
+				System.out.println("Total payments to the editors in month " + year + "-" + month);
+				DBActions.totalPaymentsEditorsPerTimePeriod(year, month);
 				System.out.println();
-				System.out.println("Total payments to the authors in month " + month);
-				DBActions.totalPaymentsAuthorsPerTimePeriod(month);
+				System.out.println("Total payments to the authors in month " + year + "-" + month);
+				DBActions.totalPaymentsAuthorsPerTimePeriod(year, month);
 				System.out.println();
 			}
 		}
