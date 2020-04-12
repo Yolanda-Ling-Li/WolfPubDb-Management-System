@@ -74,45 +74,14 @@ public class Main {
 				
 			}
 			if (selectedTask == 2) {
-				System.out.println("person_id: ");
-				int person_id = Integer.parseInt(scanner.nextLine());
-	
-				System.out.println("name: ");
-				String name = scanner.nextLine();
-
-				System.out.println("type: ");
-				String type = scanner.nextLine();
-
-				System.out.println("gender: ");
-				String gender = scanner.nextLine();
-	
-				System.out.println("age: ");
-				int age;
-				try {
-					age = Integer.parseInt(scanner.nextLine());
-				} catch (Exception e) {
-					age = -1;
-				}
-
-				System.out.println("email: ");
-				String email = scanner.nextLine();
-
-				System.out.println("phone No.: ");
-				String phone_no = scanner.nextLine();
-
-				System.out.println("address");
-				String address = scanner.nextLine();
+				System.out.println("pub_id:");
+				int pub_id = Integer.parseInt(scanner.nextLine());
+				System.out.println("title:");
+				String title = scanner.nextLine();
+				System.out.println("date: ");
+				String date = scanner.nextLine();
 				
-				DBActions.updatePerson(person_id, 
-						name.isEmpty() ? null : name, 
-						type.isEmpty() ? null : type, 
-						gender.isEmpty() ? null : gender, 
-						age == -1 ? null : age, 
-						email.isEmpty() ? null : email, 
-						phone_no.isEmpty() ? null : phone_no, 
-						address.isEmpty() ? null : address);
-			
-				
+				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
 			}
 			if (selectedTask == 3) {
 				System.out.println("person_id:");
