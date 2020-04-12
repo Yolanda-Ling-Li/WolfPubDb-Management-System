@@ -8,6 +8,11 @@ We develop this application using [Eclipse](https://www.eclipse.org/downloads/).
 * JDK 1.8
 * mariadb-java-client-2.0.2.jar (runtime only). This is the MariaDB JDBC driver. 
 
+## Initialize database
+We use mysql to build database. Initialize database through .sql file
+`source creates_only.sql`
+`source inserts_only.sql`
+
 ## Run in command line
 Navigate to where Main.class locates. Execute below command:
 `java Main`
