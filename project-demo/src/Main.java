@@ -68,15 +68,18 @@ public class Main {
 		
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 				System.out.println("title: ");
 				String title = scanner.nextLine();
 				System.out.println("date: ");
 				String date = scanner.nextLine();
 				DBActions.addPublication(title, date);
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 			}
 			if (selectedTask == 2) {
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
@@ -85,21 +88,27 @@ public class Main {
 				System.out.println("date: ");
 				String date = scanner.nextLine();
 				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 			}
 			if (selectedTask == 3) {
+				System.out.println("*The current table of Editors is:");
 				DBActions.viewEditors();
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
+				System.out.println("*The current table of Editor_edit_Publications is:");
 				DBActions.viewEditor_edit_Publication();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.assignEditorToPublication(person_id, pub_id);
-			
+				
+				System.out.println("*The current table of Editor_edit_Publications is:");
 				DBActions.viewEditor_edit_Publication();
 			}
 			if (selectedTask == 4) {
+				System.out.println("*The current table of Editors is:");
 				DBActions.viewEditors();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
@@ -108,9 +117,11 @@ public class Main {
 			if (selectedTask == 5) {
 				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
-				
+				System.out.println("*The current table of Articles_Chapters is:");
 				DBActions.viewArticlesChapters();
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
+				System.out.println("*The current table of Author_write_Articles_or_Chapters is:");
 				DBActions.viewArticles_or_Chapters_in_Publications();
 				if (selected == 1) {
 					System.out.println("art_id: ");
@@ -127,6 +138,7 @@ public class Main {
 					DBActions.deleteArticleToPublication(art_id, pub_id);
 				}
 				
+				System.out.println("*The current table of Author_write_Articles_or_Chapters is:");
 				DBActions.viewArticles_or_Chapters_in_Publications();
 			}
 		}
