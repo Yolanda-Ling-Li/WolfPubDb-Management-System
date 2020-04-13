@@ -244,7 +244,7 @@ public class DBActions {
 	public static void viewArticlesChapters() {
 		try {
 			System.out.println("Articles/Chapters Information");
-			result = statement.executeQuery("SELECT art_id, title, name AS author_name, topic, date, text FROM Articles_Chapters NATURAL JOIN Author_write_Articles_or_Chapters NATURAL JOIN Persons");
+			result = statement.executeQuery("SELECT * FROM Articles_Chapters");
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -274,7 +274,7 @@ public class DBActions {
 	 */
 	public static void addArticleChapter(String date, String text, String title, String topic) {
 		try {
-			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES (NULL, " + date + ", " + text + ", " + title + ", " + topic + ")");
+			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES (NULL, '" + date + "', '" + text + "', '" + title + "', '" + topic + "')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

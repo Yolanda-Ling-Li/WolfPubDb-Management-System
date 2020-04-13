@@ -265,7 +265,6 @@ public class Main {
 				String title = scanner.nextLine();
 				System.out.println("topic: ");
 				String topic = scanner.nextLine();
-				DBActions.viewPublications();
 				DBActions.addArticleChapter(date, text, title, topic);
 				DBActions.viewArticlesChapters();
 			}
