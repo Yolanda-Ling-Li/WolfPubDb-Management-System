@@ -314,7 +314,6 @@ public class Main {
 			if (selectedTask == 1) {
 				System.out.println("*The current table of Distributors is:");
 				DBActions.viewDistributors();
-				String type = "distributor";
 				System.out.println("name: ");
 				String name = scanner.nextLine();
 				System.out.println("balance: ");
@@ -329,7 +328,7 @@ public class Main {
 				String city = scanner.nextLine();
 				System.out.println("address: ");
 				String address = scanner.nextLine();				
-				DBActions.enterNewDistributor(type, name, balance, contact_person, phone_num, d_type, city, address);
+				DBActions.enterNewDistributor(name, balance, contact_person, phone_num, d_type, city, address);
 				System.out.println("*After insert, the current table of Distributors is:");
 				DBActions.viewDistributors();
 			}

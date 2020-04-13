@@ -26,28 +26,11 @@ public class DBActions {
 		}
 	}
 
-	public static void main(String[] args) {
-		try {
-			System.out.println("Is User 1 admin: " + isUserAdmin(1));
-			System.out.println("Is User 2 admin: " + isUserAdmin(2));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		close();
-	}
-	
-	public static boolean isUserAdmin(int person_id) {
-		try {
-			result = statement.executeQuery(String.format("SELECT type FROM Persons WHERE person_id = %d", person_id));
-			if (result.next()) {
-				return result.getString(1).equals("admin");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
+	/**
+	 * Coonect to our local database.
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private static void connectToDatabase() throws ClassNotFoundException, SQLException {
 		Class.forName("org.mariadb.jdbc.Driver");
 
@@ -58,6 +41,10 @@ public class DBActions {
 		statement = connection.createStatement();
 	}
 
+	/**
+	 * Take a ResultSet as a parameter and print its content.
+	 * @param rs a ResultSet
+	 */
 	private static void printResultSet(ResultSet rs) {
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -80,8 +67,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	 
-	
+
+	/**
+	 * Insert a new publication into the Publications table.
+	 * @param title the title of the new publication
+	 * @param date the date of the new publication
+	 */
 	public static void addPublication(String title, String date) {
 		try {
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
@@ -89,7 +80,11 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all the Publications that an Editor is responsible for.
+	 * @param person_id the person_id of the Editor
+	 */
 	public static void viewPublicationByEditor(int person_id) {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications WHERE pub_id IN (SELECT pub_id FROM Editor_edit_Publications WHERE person_id=" + person_id + ")");
@@ -99,7 +94,12 @@ public class DBActions {
 		}
 
 	}
-	
+
+	/**
+	 * Assign a Publication to an Editor.
+	 * @param person_id the person_id of the Editor
+	 * @param pub_id the pub_id of the Publication
+	 */
 	public static void assignEditorToPublication(int person_id, int pub_id) {
 		try {
 			statement.executeUpdate(String.format("INSERT INTO Editor_edit_Publications VALUES (%d, %d)", person_id, pub_id));
@@ -108,6 +108,9 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all current Periodicals.
+	 */
 	public static void viewPeriodicals() {
 		try {
 			System.out.println("Periodicals Information");
@@ -118,6 +121,10 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all salaries for a specified Person.
+	 * @param person_id the person_id of the Person
+	 */
 	public static void viewPaymentsSalary(String person_id) {
 		try {
 			if (person_id.equals("")) {
@@ -138,6 +145,9 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all Editors and Authors.
+	 */
 	public static void viewEditorsAuthors() {
 		try {
 			System.out.println("Editors and Authors Information");
@@ -150,7 +160,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Editors.
+	 */
 	public static void viewEditors() {
 		try {
 			result = statement.executeQuery("(SELECT Persons.person_id AS person_id, name, gender, age, email, " +
@@ -160,7 +173,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all information in Editor_edit_Publication table.
+	 */
 	public static void viewEditor_edit_Publication() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Editor_edit_Publications");
@@ -169,7 +185,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all information in Articles_or_Chapters_in_Publications table.
+	 */
 	public static void viewArticles_or_Chapters_in_Publications() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Articles_or_Chapters_in_Publications");
@@ -179,6 +198,10 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all unclaimed payments for a specified Person.
+	 * @param person_id the person_id of the Person
+	 */
 	public static void viewUnclaimedPayments(String person_id) {
 		try {
 			System.out.println("Unclaimed Payments of person_id:" + person_id);
@@ -189,6 +212,9 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all Books.
+	 */
 	public static void viewBooks() {
 		try {
 			System.out.println("Books Information");
@@ -199,6 +225,9 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all Issues.
+	 */
 	public static void viewIssues() {
 		try {
 			System.out.println("Issues Information");
@@ -209,6 +238,9 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Print all Articles/Chapters.
+	 */
 	public static void viewArticlesChapters() {
 		try {
 			System.out.println("Articles/Chapters Information");
@@ -219,6 +251,12 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Add a new Periodical
+	 * @param type the type of the Periodical (journal/magazine)
+	 * @param periodicity the periodicity of the Periodical (monthly/weekly/daily)
+	 * @param topic the topic of the Periodical (sports/health/science...)
+	 */
 	public static void addPeriodical(String type, String periodicity, String topic) {
 		try {
 			statement.executeUpdate("INSERT INTO Periodicals VALUES(NULL,'" + type + "', '" + periodicity + "', '" + topic + "')");
@@ -227,6 +265,13 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Add a new Article/Chapter
+	 * @param date the date of the Article/Chapter (YYYY-MM-DD)
+	 * @param text the text of the Article/Chapter
+	 * @param title the title of the Article/Chapter
+	 * @param topic the topic of the Article/Chapter (sports/health/science...)
+	 */
 	public static void addArticleChapter(String date, String text, String title, String topic) {
 		try {
 			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES (NULL, " + date + ", " + text + ", " + title + ", " + topic + ")");
@@ -234,7 +279,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Add a new Article/Chapter to a Publication.
+	 * @param art_id the art_id of the Article/Chapter to be added
+	 * @param pub_id the pub_id of the Publication to add to
+	 */
 	public static void addArticleToPublication(int art_id, int pub_id) {
 		try {
 			statement.executeUpdate(String.format("INSERT INTO Articles_or_Chapters_in_Publications VALUES (%d, %d)", pub_id, art_id));
@@ -243,6 +293,23 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Delete an Article/Chapter.
+	 * @param art_id the art_id of the Article/Chapter
+	 */
+	public static void deleteArticleChapter(String art_id) {
+		try {
+			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Delete an Article/Chapter from a Publication. The Article/Chapter still remains in the database and may appear in other Publications.
+	 * @param art_id the art_id of the Article/Chapter to be deleted
+	 * @param pub_id the pub_id of the Publication to deleted from
+	 */
 	public static void deleteArticleToPublication(int art_id, int pub_id) {
 		try {
 			statement.executeUpdate(String.format("DELETE FROM Articles_or_Chapters_in_Publications WHERE art_id=%d and pub_id=%d", art_id, pub_id));
@@ -251,14 +318,14 @@ public class DBActions {
 		}
 	}
 
-	public static void deleteArticleChapter(String art_id) {
-		try {
-			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
+	/**
+	 * Add a new Book.
+	 * @param title the title of the new Book
+	 * @param date the date of the new Book (YYYY-MM-DD)
+	 * @param edition the edition of the new Book
+	 * @param ISBN the ISBN of the new Book
+	 * @param topic the topic of the new Book (sports/health/science...)
+	 */
 	public static void addBook(String title, String date, String edition, String ISBN, String topic) {
 		try {
 			connection.setAutoCommit(false);
@@ -270,7 +337,13 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Add a new Issue.
+	 * @param title the title of the new Issue
+	 * @param date the date of the new Issue (YYYY-MM-DD)
+	 * @param period_id the period_id of the Periodical the new Issue belongs to
+	 */
 	public static void addIssue(String title, String date, String period_id) {
 		try {
 			connection.setAutoCommit(false);
@@ -282,7 +355,16 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Update a Book.
+	 * @param pub_id the pub_id of the Book to be updated
+	 * @param edition the new edition of the Book
+	 * @param ISBN the new ISBN of the Book
+	 * @param topic the new topic of the Book (sports/health/science...)
+	 * @param title the new title of the Book
+	 * @param date the new date of the Book (YYYY-MM-DD)
+	 */
 	public static void updateBook(String pub_id, String edition, String ISBN, String topic, String title, String date) {
 		try {
 			connection.setAutoCommit(false);
@@ -308,6 +390,15 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Update an Issue.
+	 * @param pub_id the pub_id of the Issue to be updated
+	 * @param title the new title of the Issue
+	 * @param date the new date of the Issue (YYYY-MM-DD)
+	 * @param type the new type of the Periodical the Issue belongs to (journal/magazine)
+	 * @param periodicity the new periodicity of the Periodical the Issue belongs to (journal/magazine)
+	 * @param topic the new topic of the Periodical the Issue belongs to (sports/health/science...)
+	 */
 	public static void updateIssue(String pub_id, String title, String date, String type, String periodicity, String topic) {
 		try {
 			connection.setAutoCommit(false);
@@ -333,6 +424,10 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Delete a Publication.
+	 * @param pub_id the pub_id of the Publication to be deleted
+	 */
 	public static void deletePublication(String pub_id) {
 		try {
 			statement.executeUpdate("DELETE FROM Publications WHERE pub_id=" + pub_id);
@@ -340,7 +435,13 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Update a Publication.
+	 * @param pub_id the pub_id of the Publication to be updated
+	 * @param title the new title of the Publication
+	 * @param date the new date of the Publication (YYYY-MM-DD)
+	 */
 	public static void updatePublication(int pub_id, String title, String date) {
 		try {
 			connection.setAutoCommit(false);
@@ -356,7 +457,15 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Update an Article/Chapter
+	 * @param art_id the art_id of the Article/Chapter to be updated
+	 * @param date the new date of the Article/Chapter (YYYY-MM-DD)
+	 * @param text the new text of the Article/Chapter
+	 * @param title the new title of the Article/Chapter
+	 * @param topic the new topic of the Article/Chapter
+	 */
 	public static void updateArticleChapter(String art_id, String date, String text, String title, String topic) {
 		try {
 			connection.setAutoCommit(false);
@@ -378,7 +487,13 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Find all Books satisfying the search criteria.
+	 * @param topic the topic to search for
+	 * @param date the date to search for (YYYY-MM-DD)
+	 * @param authorName the authorName to search for
+	 */
 	public static void searchBooks(String topic, String date, String authorName) {
 		List<String> search = new ArrayList<String>();
 
@@ -403,6 +518,12 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Find all Books satisfying the search criteria.
+	 * @param topic the topic to search for
+	 * @param date the date to search for (YYYY-MM-DD)
+	 * @param authorName the authorName to search for
+	 */
 	public static void searchArticles(String topic, String date, String authorName){
 		List<String> search = new ArrayList<String>();
 
@@ -426,7 +547,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Add a new Payment (salary) to a specified Person.
+	 * @param amount the amount of the new Payment
+	 * @param person_id the person_id of the Person
+	 */
 	public static void addPayment(String amount, String person_id) {
 		try {
 			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, 'salary', -" + amount + ", " + person_id +")");
@@ -435,6 +561,11 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Claim a Payment (salary) for a specified Person.
+	 * @param pay_id the pay_id of the Payment to claim
+	 * @param person_id the person_id of the Person
+	 */
 	public static void claimPayment(String pay_id, String person_id) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate today = LocalDate.now();
@@ -447,7 +578,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Distributors.
+	 */
 	public static void viewDistributors() {
 		try {
 			result = statement.executeQuery("SELECT Persons.person_id,name,phone_num,address,balance,contact_person,Distributors.type,city FROM Persons, Distributors WHERE Persons.person_id = Distributors.person_id;");
@@ -456,7 +590,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Orders.
+	 */
 	public static void viewOrders() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Orders;");
@@ -465,7 +602,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Publications.
+	 */
 	public static void viewPublications() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Publications ;");
@@ -474,7 +614,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Payments.
+	 */
 	public static void viewPayments() {
 		try {
 			result = statement.executeQuery("SELECT * FROM Payments;");
@@ -484,10 +627,20 @@ public class DBActions {
 		}
 	}
 
-	public static void enterNewDistributor(String type, String name, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
+	/**
+	 * Add a new Distributor.
+	 * @param name the name of the new Distributor
+	 * @param balance the balance of the new Distributor
+	 * @param contact_person the contact_person of the new Distributor
+	 * @param phone_num the phone_num of the new Distributor
+	 * @param d_type the d_type of the new Distributor (wholesaler/bookstore...)
+	 * @param city the city of the new Distributor
+	 * @param address the address of the new Distributor
+	 */
+	public static void enterNewDistributor(String name, Float balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
 			connection.setAutoCommit(false);
-			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, '%s', '%s', NULL, NULL, NULL, '%s', '%s');", type, name, phone_num, address));
+			statement.executeUpdate(String.format("INSERT INTO Persons VALUES (NULL, 'distributor', '%s', NULL, NULL, NULL, '%s', '%s');", name, phone_num, address));
 			statement.executeUpdate(String.format("INSERT INTO Distributors VALUES (LAST_INSERT_ID(), %f, '%s', '%s', '%s');", balance, contact_person, d_type, city));
 			connection.commit();
 			connection.setAutoCommit(true); 
@@ -502,7 +655,18 @@ public class DBActions {
 			}
 		}
 	}
-	
+
+	/**
+	 * Update a Distributor
+	 * @param person_id the person_id of the Distributor to be updated
+	 * @param name the new name of the Distributor
+	 * @param balance the new balance of the Distributor
+	 * @param contact_person the new contact_person of the Distributor
+	 * @param phone_num the new phone_num of the Distributor
+	 * @param d_type the new d_type of the Distributor (wholesaler/bookstore...)
+	 * @param city the new city of the Distributor
+	 * @param address the new address of the Distributor
+	 */
 	public static void updateDistributor(int person_id, String name, String balance, String contact_person, String phone_num, String d_type, String city, String address) {
 		try {
 			connection.setAutoCommit(false);
@@ -541,6 +705,10 @@ public class DBActions {
 		}
 	}
 
+	/**
+	 * Delete a Distributor.
+	 * @param person_id the person_id of the Distributor to be deleted
+	 */
 	public static void deleteDistributor(int person_id){
 		try {
 			statement.executeUpdate(String.format("DELETE FROM Persons WHERE person_id=%d;", person_id));
@@ -549,6 +717,16 @@ public class DBActions {
 		}	
 	}
 
+	/**
+	 * Add a new Order for a Distributor for a Publication.
+	 * @param num_of_copy the num_of_copy of the new Order
+	 * @param order_date the order_date of the new Order (YYYY-MM-DD)
+	 * @param delivery_date the delivery_date of the new Order (YYYY-MM-DD)
+	 * @param price the price of the new Order
+	 * @param shipping_cost the shipping_cost of the new Order
+	 * @param person_id the person_id of the Distributor to add the new Order for
+	 * @param pub_id the pub_id of the Publication in the new Order
+	 */
 	public static void inputOrderByDistributor(int num_of_copy, String order_date, String delivery_date, float price, float shipping_cost, int person_id, int pub_id) {
 		try {
 			connection.setAutoCommit(false);
@@ -567,7 +745,11 @@ public class DBActions {
 			}
 		}
 	}
-	
+
+	/**
+	 * Bill the Distributor for an Order
+	 * @param order_id the order_id of the Order
+	 */
 	public static void billDistributorAnOrder(int order_id){
 		try {
 			statement.executeUpdate(String.format("UPDATE Distributors SET balance=balance+(SELECT price+shipping_cost FROM Orders WHERE order_id=%d) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=%d); ", order_id, order_id));
@@ -575,7 +757,13 @@ public class DBActions {
 			e.printStackTrace();
 		}	
 	}
-	
+
+	/**
+	 * Change balance of a Distributor on receipt of a Payment
+	 * @param date the date of the Payment (YYYY-MM-DD)
+	 * @param amount the amount of the Payment
+	 * @param person_id the person_id of the Distributor
+	 */
 	public static void changeBalance(String date, Float amount, int person_id) {
 		try {
 			connection.setAutoCommit(false);
@@ -594,7 +782,12 @@ public class DBActions {
 			}
 		}
 	}
-	
+
+	/**
+	 * Generate monthly report.
+	 * @param year the year for the report
+	 * @param month the month for the report
+	 */
 	public static void generateMonthlyReport(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, person_id," +
@@ -608,7 +801,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all revenue.
+	 * @param year the year for the report
+	 * @param month the month for the report
+	 */
 	public static void totalRevenueofPublishingHouse(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
@@ -619,7 +817,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all expenses.
+	 * @param year the year for the report
+	 * @param month the month for the report
+	 */
 	public static void totalExpenses(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_expense " +
@@ -630,7 +833,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print the number of Distributors.
+	 */
 	public static void totalDistributors() {
 		try {
 			result = statement.executeQuery("SELECT COUNT(*) FROM Distributors;");
@@ -640,7 +846,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Generate report of revenue per city.
+	 */
 	public static void totalRevenuePerCity() {
 		try {
 			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, city, " +
@@ -652,7 +861,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Generate report of revenue per disributor.
+	 */
 	public static void totalRevenuePerDistributor() {
 		try {
 			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
@@ -664,7 +876,10 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Generate report of revenue per location.
+	 */
 	public static void totalRevenuePerLocation() {
 		try {
 			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, address, SUM(price) AS total_price " +
@@ -675,7 +890,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Payments for Editors for a month.
+	 * @param year the year for the report
+	 * @param month the month for the report
+	 */
 	public static void totalPaymentsEditorsPerTimePeriod(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(Payments.date), '-', MONTH(Payments.date)) AS month, " +
@@ -687,7 +907,12 @@ public class DBActions {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Print all Payments for Authors for a month.
+	 * @param year the year for the report
+	 * @param month the month for the report
+	 */
 	public static void totalPaymentsAuthorsPerTimePeriod(int year, int month) {
 		try {
 			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_salary " +
