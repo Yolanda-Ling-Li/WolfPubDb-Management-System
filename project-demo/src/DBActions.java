@@ -334,7 +334,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -352,7 +359,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -386,7 +400,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -420,7 +441,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -454,7 +482,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -484,7 +519,14 @@ public class DBActions {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (connection != null) {
+				try {
+					connection.rollback(); 
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
