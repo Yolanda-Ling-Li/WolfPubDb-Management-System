@@ -507,8 +507,8 @@ public class DBActions {
 			search.add("name LIKE '%" + authorName + "%'");
 		}
 		try {
-			String query = "SELECT title, edition, ISBN, date, topic, name AS author_name FROM Books NATURAL JOIN " +
-					"Publications NATURAL JOIN Author_write_Books NATURAL JOIN Persons";
+			String query = "SELECT title, edition, ISBN, date, topic, name AS author_name FROM (Books NATURAL JOIN Publications)" +
+					" LEFT JOIN (Author_write_Books NATURAL JOIN Persons) ON Books.pub_id=Author_write_Books.pub_id";
 			if (search.size() > 0)
 				query += " WHERE " + String.join(" AND ", search);
 			result = statement.executeQuery(query);
