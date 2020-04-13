@@ -523,9 +523,10 @@ public class DBActions {
 
 	public static void inputOrderByDistributor(int num_of_copy, String order_date, String delivery_date, float price, float shipping_cost, int person_id, int pub_id) {
 		try {
-			connection.setAutoCommit(false);
-			statement.executeUpdate(String.format("INSERT INTO Orders VALUES(NULL, %d, '%s', '%s', %f, %f, %d, %d);", num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id));
+			connection.setAutoCommit(false);	
 			statement.executeUpdate(String.format("INSERT INTO Payments VALUES (NULL, '%s', 'shipping', %f, %d);", order_date, -shipping_cost, person_id));
+			statement.executeUpdate(String.format("INSERT INTO Orders VALUES(NULL, %d, '%s', '%s', %f, %f, %d, %d);", num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id));
+			statement.executeUpdate("UPDATE Distributors SET balance=balance+(SELECT price FROM Orders WHERE order_id=LAST_INSERT_ID()) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=LAST_INSERT_ID()); ");
 			connection.commit();
 			connection.setAutoCommit(true); 
 		} catch (SQLException e) {
@@ -542,7 +543,7 @@ public class DBActions {
 	
 	public static void billDistributorAnOrder(int order_id){
 		try {
-			statement.executeUpdate(String.format("UPDATE Distributors SET balance=balance+(SELECT price+shipping_cost FROM Orders WHERE order_id=%d) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=%d); ", order_id, order_id));
+			statement.executeUpdate(String.format("UPDATE Distributors SET balance=balance+(SELECT price FROM Orders WHERE order_id=%d) WHERE person_id=(SELECT person_id FROM Orders WHERE order_id=%d); ", order_id, order_id));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	

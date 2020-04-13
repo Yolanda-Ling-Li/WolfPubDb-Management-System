@@ -70,7 +70,7 @@ public class Main {
 				DBActions.viewPublications();
 				System.out.println("title: ");
 				String title = scanner.nextLine();
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				DBActions.addPublication(title, date);
 				DBActions.viewPublications();
@@ -81,7 +81,7 @@ public class Main {
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("title:");
 				String title = scanner.nextLine();
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
 				DBActions.viewPublications();
@@ -233,7 +233,7 @@ public class Main {
 				String text = scanner.nextLine();
 				System.out.println("topic: ");
 				String topic = scanner.nextLine();
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				DBActions.viewPublications();
 				System.out.println("pub_id: ");
@@ -364,9 +364,9 @@ public class Main {
 				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
-				System.out.println("order_date: ");
+				System.out.println("order_date(YYYY-MM-DD): ");
 				String order_date = scanner.nextLine();
-				System.out.println("delivery_date: ");
+				System.out.println("delivery_date(YYYY-MM-DD): ");
 				String delivery_date = scanner.nextLine();
 				System.out.println("price: ");
 				Float price = Float.parseFloat(scanner.nextLine());
@@ -383,6 +383,9 @@ public class Main {
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
 				System.out.println("*After insert, the current table of Orders is:");
 				DBActions.viewOrders();
+				System.out.println("=====================================================================");
+				System.out.println("*After insert, the current table of Distributors is:");
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 5) {
 				System.out.println("*The current table of Orders is:");
@@ -402,9 +405,9 @@ public class Main {
 				System.out.println("=====================================================================");
 				System.out.println("*The current table of Payments is:");
 				DBActions.viewPayments();
-				System.out.println("Which distributor do you want to change balace? Please input id: ");
+				System.out.println("Which distributor do you want to change balance? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				System.out.println("amount: ");
 				Float amount = Float.parseFloat(scanner.nextLine());
