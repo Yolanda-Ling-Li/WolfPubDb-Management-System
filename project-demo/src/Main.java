@@ -1,18 +1,26 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * This program is designed to manage a publishing house. Admin as an user, can add/update publications, books, issues, orders, and
+ * view useful information in this system. The system can also print monthly report which shows information of distributor and order
+ * details, and information of location, city, salary, and payments.
+ * @author Zhuowei Li, Ling Li, Larry Lai, Qingyan Wang
+ *
+ */
 public class Main {
-	
+	// A list of operation strings for printing out
 	private static List<String> operations = new ArrayList<String>();
+	// A list of task strings for printing out
 	private static List<List<String>> tasks = new ArrayList<List<String>>();
 	
 	static {
+		// Basic operations
 		operations.add("Editing and publishing");
 		operations.add("Production of a book edition or of an issue of a publication");
 		operations.add("Distribution");
 		operations.add("Reports");
-		
+		// Basic tasks
 		List<String> op1Tasks = new ArrayList<String>();
 		op1Tasks.add("Enter basic information on a new publication");
 		op1Tasks.add("Update publication information");
@@ -20,7 +28,7 @@ public class Main {
 		op1Tasks.add("Let each editor view the information on the publications he/she is responsible for");
 		op1Tasks.add("Edit table of contents of a publication, by adding/deleting articles (for periodic publications) or chapters/sections (for books)");
 		tasks.add(op1Tasks);
-		
+		// Basic tasks
 		List<String> op2Tasks = new ArrayList<String>();
 		op2Tasks.add("Enter a new book edition or new issue of a publication");
 		op2Tasks.add("Update, delete a book edition or publication issue");
@@ -30,7 +38,7 @@ public class Main {
 		op2Tasks.add("Enter payment for author or editor");
 		op2Tasks.add("Claim payment for author or editor");
 		tasks.add(op2Tasks);
-		
+		// Basic tasks
 		List<String> op3Tasks = new ArrayList<String>();
 		op3Tasks.add("Enter new distributor");
 		op3Tasks.add("Update distributor information");
@@ -39,7 +47,7 @@ public class Main {
 		op3Tasks.add("Bill distributor for an order");
 		op3Tasks.add("Change outstanding balance of a distributor on receipt of a payment");
 		tasks.add(op3Tasks);
-		
+		// Basic tasks
 		List<String> op4Tasks = new ArrayList<String>();
 		op4Tasks.add("Generate monthly reports: number and total price of copies of each publication bought per distributor per month");
 		op4Tasks.add("total revenue of the publishing house");
@@ -49,7 +57,10 @@ public class Main {
 		op4Tasks.add("Calculate total payments to the editors and authors, per time period and per work type (book authorship, article authorship, or editorial work)");
 		tasks.add(op4Tasks);
 	}
-
+	/**
+	 * Print a menu and prompt for user input. User can choose from menu to do different operation in this system.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.out.println("Select operation:");
 		for (int i = 0; i < operations.size(); i++) {
@@ -65,41 +76,50 @@ public class Main {
 //		System.out.println(selectedTask);
 		
 		System.out.println("Your task: " + tasks.get(selectedOperation - 1).get(selectedTask - 1));
-		
+		// If user input is 1, printout first menu and show tasks related to publications
 		if (selectedOperation == 1) {
 			if (selectedTask == 1) {
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 				System.out.println("title: ");
 				String title = scanner.nextLine();
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				DBActions.addPublication(title, date);
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 			}
 			if (selectedTask == 2) {
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("title:");
 				String title = scanner.nextLine();
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				DBActions.updatePublication(pub_id, title.isEmpty() ? null : title, date.isEmpty() ? null : date);
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
 			}
 			if (selectedTask == 3) {
+				System.out.println("*The current table of Editors is:");
 				DBActions.viewEditors();
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
+				System.out.println("*The current table of Editor_edit_Publications is:");
 				DBActions.viewEditor_edit_Publication();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
 				System.out.println("pub_id:");
 				int pub_id = Integer.parseInt(scanner.nextLine());
 				DBActions.assignEditorToPublication(person_id, pub_id);
-			
+				
+				System.out.println("*The current table of Editor_edit_Publications is:");
 				DBActions.viewEditor_edit_Publication();
 			}
 			if (selectedTask == 4) {
+				System.out.println("*The current table of Editors is:");
 				DBActions.viewEditors();
 				System.out.println("person_id:");
 				int person_id = Integer.parseInt(scanner.nextLine());
@@ -108,9 +128,11 @@ public class Main {
 			if (selectedTask == 5) {
 				System.out.println("1. add 2. delete");
 				int selected = Integer.parseInt(scanner.nextLine());
-				
+				System.out.println("*The current table of Articles_Chapters is:");
 				DBActions.viewArticlesChapters();
+				System.out.println("*The current table of Publications is:");
 				DBActions.viewPublications();
+				System.out.println("*The current table of Author_write_Articles_or_Chapters is:");
 				DBActions.viewArticles_or_Chapters_in_Publications();
 				if (selected == 1) {
 					System.out.println("art_id: ");
@@ -127,10 +149,11 @@ public class Main {
 					DBActions.deleteArticleToPublication(art_id, pub_id);
 				}
 				
+				System.out.println("*The current table of Author_write_Articles_or_Chapters is:");
 				DBActions.viewArticles_or_Chapters_in_Publications();
 			}
 		}
-		
+		// If user input is 2, printout second menu and show tasks related to publications, updating, and assigning editors
 		if (selectedOperation == 2) {
 			if (selectedTask == 1) {
 				//Enter a new book edition or new issue of a publication
@@ -234,7 +257,7 @@ public class Main {
 				//Enter an article or chapter
 				DBActions.viewArticlesChapters();
 				System.out.println("Adding a new Article/Chapter...");
-				System.out.println("date (YYYY-MM-DD): ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				System.out.println("text: ");
 				String text = scanner.nextLine();
@@ -309,7 +332,7 @@ public class Main {
 				DBActions.viewPaymentsSalary(person_id);
 			}
 		}
-		
+		// If user input is 3, printout third menu and show tasks related to orders and distributors
 		if (selectedOperation == 3) {
 			if (selectedTask == 1) {
 				System.out.println("*The current table of Distributors is:");
@@ -369,9 +392,9 @@ public class Main {
 				DBActions.viewOrders();
 				System.out.println("num_of_copy: ");
 				Integer num_of_copy = Integer.parseInt(scanner.nextLine());
-				System.out.println("order_date: ");
+				System.out.println("order_date(YYYY-MM-DD): ");
 				String order_date = scanner.nextLine();
-				System.out.println("delivery_date: ");
+				System.out.println("delivery_date(YYYY-MM-DD): ");
 				String delivery_date = scanner.nextLine();
 				System.out.println("price: ");
 				Float price = Float.parseFloat(scanner.nextLine());
@@ -388,6 +411,9 @@ public class Main {
 				DBActions.inputOrderByDistributor(num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id);
 				System.out.println("*After insert, the current table of Orders is:");
 				DBActions.viewOrders();
+				System.out.println("=====================================================================");
+				System.out.println("*After insert, the current table of Distributors is:");
+				DBActions.viewDistributors();
 			}
 			if (selectedTask == 5) {
 				System.out.println("*The current table of Orders is:");
@@ -407,9 +433,9 @@ public class Main {
 				System.out.println("=====================================================================");
 				System.out.println("*The current table of Payments is:");
 				DBActions.viewPayments();
-				System.out.println("Which distributor do you want to change balace? Please input id: ");
+				System.out.println("Which distributor do you want to change balance? Please input id: ");
 				int person_id = Integer.parseInt(scanner.nextLine());
-				System.out.println("date: ");
+				System.out.println("date(YYYY-MM-DD): ");
 				String date = scanner.nextLine();
 				System.out.println("amount: ");
 				Float amount = Float.parseFloat(scanner.nextLine());
@@ -421,7 +447,7 @@ public class Main {
 				DBActions.viewPayments();
 			}
 		}
-		
+		// If user input is 4, printout fourth menu and show tasks of monthly report generation
 		if (selectedOperation == 4) {
 			//Generate monthly reports: number and total price of copies of each publication bought per distributor per month
 			if (selectedTask == 1) {
