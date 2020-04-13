@@ -75,6 +75,7 @@ public class DBActions {
 				}
 				System.out.println();
 			}
+			System.out.println();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +110,28 @@ public class DBActions {
 
 	public static void viewPeriodicals() {
 		try {
+			System.out.println("Periodicals Information");
 			result = statement.executeQuery("SELECT * FROM Periodicals");
+			printResultSet(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void viewPaymentsSalary(String person_id) {
+		try {
+			if (person_id.equals("")) {
+				System.out.println("Payments: Salary Information");
+				result = statement.executeQuery("SELECT pay_id, date, Payments.type, amount, " +
+						"name, Persons.type FROM Payments JOIN Persons " +
+						"on Payments.person_id = Persons.person_id WHERE Payments.type = 'salary'");
+			} else {
+				System.out.println("Payments: Salary Information of person_id" + person_id);
+				result = statement.executeQuery("SELECT pay_id, date, Payments.type, amount, " +
+						"name, Persons.type FROM Payments JOIN Persons " +
+						"on Payments.person_id = Persons.person_id WHERE Payments.type = 'salary'" +
+						" AND Payments.person_id = " + person_id);
+			}
 			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -118,6 +140,7 @@ public class DBActions {
 
 	public static void viewEditorsAuthors() {
 		try {
+			System.out.println("Editors and Authors Information");
 			result = statement.executeQuery("(SELECT Persons.person_id AS person_id, name, gender, age, email, " +
 					"CONCAT(Editors.type, ' ', Persons.type) AS type FROM Persons JOIN Editors ON Persons.person_id = Editors.person_id)\n" +
 					"UNION (SELECT Persons.person_id AS person_id, name, gender, age, email, " +
@@ -158,6 +181,7 @@ public class DBActions {
 
 	public static void viewUnclaimedPayments(String person_id) {
 		try {
+			System.out.println("Unclaimed Payments of person_id:" + person_id);
 			result = statement.executeQuery("SELECT * FROM Payments WHERE person_id=" + person_id + " AND date IS NULL");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -167,6 +191,7 @@ public class DBActions {
 
 	public static void viewBooks() {
 		try {
+			System.out.println("Books Information");
 			result = statement.executeQuery("SELECT * FROM Books NATURAL JOIN Publications");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -176,6 +201,7 @@ public class DBActions {
 
 	public static void viewIssues() {
 		try {
+			System.out.println("Issues Information");
 			result = statement.executeQuery("SELECT * FROM Issues NATURAL JOIN Publications NATURAL JOIN Periodicals");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -185,6 +211,7 @@ public class DBActions {
 
 	public static void viewArticlesChapters() {
 		try {
+			System.out.println("Articles/Chapters Information");
 			result = statement.executeQuery("SELECT art_id, title, name AS author_name, topic, date, text FROM Articles_Chapters NATURAL JOIN Author_write_Articles_or_Chapters NATURAL JOIN Persons");
 			printResultSet(result);
 		} catch (SQLException e) {
@@ -195,6 +222,14 @@ public class DBActions {
 	public static void addPeriodical(String type, String periodicity, String topic) {
 		try {
 			statement.executeUpdate("INSERT INTO Periodicals VALUES(NULL,'" + type + "', '" + periodicity + "', '" + topic + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addArticleChapter(String date, String text, String title, String topic) {
+		try {
+			statement.executeUpdate("INSERT INTO Articles_Chapters VALUES (NULL, " + date + ", " + text + ", " + title + ", " + topic + ")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -216,7 +251,7 @@ public class DBActions {
 		}
 	}
 
-	public static void deleteArticle(String art_id) {
+	public static void deleteArticleChapter(String art_id) {
 		try {
 			statement.executeUpdate("DELETE FROM Articles_Chapters WHERE art_id=" + art_id);
 		} catch (SQLException e) {
@@ -226,8 +261,11 @@ public class DBActions {
 	
 	public static void addBook(String title, String date, String edition, String ISBN, String topic) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL,'" + title + "','" + date + "')");
 			statement.executeUpdate("INSERT INTO Books VALUES(LAST_INSERT_ID()," + edition + ",'" + ISBN + "', '" + topic + "')");
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -235,8 +273,11 @@ public class DBActions {
 	
 	public static void addIssue(String title, String date, String period_id) {
 		try {
+			connection.setAutoCommit(false);
 			statement.executeUpdate("INSERT INTO Publications VALUES(NULL, '" + title + "', '" + date + "')");
 			statement.executeUpdate("INSERT INTO Issues VALUES(LAST_INSERT_ID(), " + period_id + ")");
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -244,6 +285,7 @@ public class DBActions {
 	
 	public static void updateBook(String pub_id, String edition, String ISBN, String topic, String title, String date) {
 		try {
+			connection.setAutoCommit(false);
 			if (!edition.equals("")) {
 				statement.executeUpdate("UPDATE Books SET edition=" + edition + " WHERE pub_id=" + pub_id);
 			}
@@ -254,18 +296,21 @@ public class DBActions {
 				statement.executeUpdate("UPDATE Books SET topic='" + topic + "' WHERE pub_id=" + pub_id);
 			}
 			if (!title.equals("")) {
-				statement.executeUpdate("UPDATE Publications SET title='" + topic + "' WHERE pub_id=" + pub_id);
+				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
 			if (!date.equals("")) {
 				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
 			}
-			} catch (SQLException e) {
+			connection.commit();
+			connection.setAutoCommit(true);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void updateIssue(String pub_id, String title, String date, String type, String periodicity, String topic) {
 		try {
+			connection.setAutoCommit(false);
 			if (!title.equals("")) {
 				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
@@ -281,6 +326,8 @@ public class DBActions {
 			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Periodicals SET topic='" + topic + "' WHERE period_id=(SELECT period_id FROM Issues WHERE pub_id=" + pub_id + ")");
 			}
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -296,59 +343,37 @@ public class DBActions {
 	
 	public static void updatePublication(int pub_id, String title, String date) {
 		try {
+			connection.setAutoCommit(false);
 			if (title != null) {
 				statement.executeUpdate("UPDATE Publications SET title='" + title + "' WHERE pub_id=" + pub_id);
 			}
 			if (date != null) {
 				statement.executeUpdate("UPDATE Publications SET date='" + date + "' WHERE pub_id=" + pub_id);
 			}
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void updateArticleChapter(String art_id, String title, String text, String topic, String date) {
+	public static void updateArticleChapter(String art_id, String date, String text, String title, String topic) {
 		try {
-			if (!title.equals("")) {
-				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
+			connection.setAutoCommit(false);
+			if (!date.equals("")) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
 			}
 			if (!text.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET text='" + text + "' WHERE art_id=" + art_id);
 			}
+			if (!title.equals("")) {
+				statement.executeUpdate("UPDATE Articles_Chapters SET title='" + title + "' WHERE art_id=" + art_id);
+			}
 			if (!topic.equals("")) {
 				statement.executeUpdate("UPDATE Articles_Chapters SET topic='" + topic + "' WHERE art_id=" + art_id);
 			}
-			if (!date.equals("")) {
-				statement.executeUpdate("UPDATE Articles_Chapters SET date='" + date + "' WHERE art_id=" + art_id);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void updatePerson(int person_id, String name, String type, String gender, Integer age, String email, String phone_num, String address) {
-		try {
-			if (name != null) {
-				statement.executeUpdate("UPDATE Persons SET name='" + name + "' WHERE person_id=" + person_id);
-			}
-			if (type != null) {
-				statement.executeUpdate("UPDATE Persons SET type='" + type + "' WHERE person_id=" + person_id);
-			}
-			if (gender != null) {
-				statement.executeUpdate("UPDATE Persons SET gender='" + gender + "' WHERE person_id=" + person_id);
-			}
-			if (age != null) {
-				statement.executeUpdate("UPDATE Persons SET age='" + age + "' WHERE person_id=" + person_id);
-			}
-			if (email != null) {
-				statement.executeUpdate("UPDATE Persons SET email='" + email + "' WHERE person_id=" + person_id);
-			}
-			if (phone_num != null) {
-				statement.executeUpdate("UPDATE Persons SET phone_num='" + phone_num + "' WHERE person_id=" + person_id);
-			}
-			if (address != null) {
-				statement.executeUpdate("UPDATE Persons SET address='" + address + "' WHERE person_id=" + person_id);
-			}			
+			connection.commit();
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -402,19 +427,22 @@ public class DBActions {
 		}
 	}
 	
-	public static void addPayment(String type, String amount, String person_id) {
+	public static void addPayment(String amount, String person_id) {
 		try {
-			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, '" + type + "', " + amount + ", " + person_id +")");
+			statement.executeUpdate("INSERT INTO Payments VALUES(NULL, NULL, 'salary', -" + amount + ", " + person_id +")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void claimPayment(String person_id) {
+	public static void claimPayment(String pay_id, String person_id) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate today = LocalDate.now();
 		try {
-			statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE person_id=" + person_id + " AND date is NULL");
+			if (pay_id.equals(""))
+				statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE person_id=" + person_id + " AND date IS NULL");
+			else
+				statement.executeUpdate("UPDATE Payments SET date='" + formatter.format(today) + "' WHERE pay_id=" + pay_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -568,43 +596,37 @@ public class DBActions {
 		}
 	}
 	
-	public static void generateMonthlyReport(int month) {
+	public static void generateMonthlyReport(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), person_id, pub_id, COUNT(*), SUM(price) FROM Orders WHERE MONTH(order_date) = %d GROUP BY pub_id, person_id;", month));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, person_id," +
+					" name, pub_id, title, SUM(num_of_copy), SUM(price) AS total_price, SUM(price)+SUM(shipping_cost) " +
+					"AS total_cost FROM Orders NATURAL JOIN Persons NATURAL JOIN Publications " +
+					"WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d " +
+					"GROUP BY person_id, pub_id;", month, year));
 			
-			System.out.println("MONTH(Order Date) | person_id | pub_id | COUNT(*) | SUM(price) ");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getInt("person_id") + " | " + result.getInt("pub_id") + " | " + result.getInt("COUNT(*)") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalRevenueofPublishingHouse(int month) {
+	public static void totalRevenueofPublishingHouse(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), SUM(price) FROM Orders WHERE MONTH(order_date) = %d;", month));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
+					"SUM(price) AS total_price FROM Orders WHERE MONTH(order_date) = %d AND YEAR(order_date) = %d;", month, year));
 			
-			System.out.println("MONTH(order date) | SUM(price) ");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalExpenses(int month) {
+	public static void totalExpenses(int year, int month) {
 		try {
-			result = statement
-					.executeQuery(String.format("SELECT MONTH(order_date), SUM(expense) FROM ( SELECT shipping_cost AS expense, order_date FROM Orders UNION ALL SELECT amount AS expense, date FROM Payments )AS Expenses WHERE MONTH(order_date) = %d;", month));
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_expense " +
+					"FROM Payments WHERE (type='salary' OR type='shipping') AND MONTH(date) = %d AND YEAR(date) = %d", month, year));
 			
-			System.out.println("MONTH(order date) | SUM(expense) ");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(order_date)") + " | " + result.getFloat("SUM(expense)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -612,13 +634,9 @@ public class DBActions {
 	
 	public static void totalDistributors() {
 		try {
-			result = statement
-					.executeQuery("SELECT COUNT(person_id) FROM Distributors;");
+			result = statement.executeQuery("SELECT COUNT(*) FROM Distributors;");
 			
-			System.out.println("COUNT(person_id)");
-			while (result.next()) {
-				System.out.println(result.getInt("COUNT(person_id)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -626,13 +644,11 @@ public class DBActions {
 	
 	public static void totalRevenuePerCity() {
 		try {
-			result = statement
-					.executeQuery("SELECT city, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id GROUP BY city;");
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, city, " +
+					"SUM(price) AS total_price FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
+					"GROUP BY city;");
 			
-			System.out.println("city | SUM(price)");
-			while (result.next()) {
-				System.out.println(result.getString("city") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -640,13 +656,11 @@ public class DBActions {
 	
 	public static void totalRevenuePerDistributor() {
 		try {
-			result = statement
-					.executeQuery("SELECT Distributors.person_id, SUM(price) FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id GROUP BY Distributors.person_id;");
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, " +
+					"Distributors.person_id, SUM(price) AS total_price FROM Orders INNER JOIN Distributors ON Orders.person_id=Distributors.person_id " +
+					"GROUP BY Distributors.person_id;");
 			
-			System.out.println(" person_id | SUM(price) ");
-			while (result.next()) {
-				System.out.println(result.getInt("person_id") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -654,69 +668,34 @@ public class DBActions {
 	
 	public static void totalRevenuePerLocation() {
 		try {
-			result = statement
-					.executeQuery("SELECT address, SUM(price) FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id GROUP BY address;");
+			result = statement.executeQuery("SELECT CONCAT(YEAR(order_date), '-', MONTH(order_date)) AS month, address, SUM(price) AS total_price " +
+					"FROM Orders INNER JOIN Persons ON Orders.person_id=Persons.person_id GROUP BY address;");
 			
-			System.out.println(" address | SUM(price) ");
-			while (result.next()) {
-				System.out.println(result.getString("address") + " | " + result.getFloat("SUM(price)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalPaymentsEditorsPerTimePeriod () {
+	public static void totalPaymentsEditorsPerTimePeriod(int year, int month) {
 		try {
-			result = statement
-					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments INNER JOIN Editors ON Payments.person_id=Editors.person_id GROUP BY MONTH(Payments.date);");
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(Payments.date), '-', MONTH(Payments.date)) AS month, " +
+					"SUM(amount) AS total_salary FROM Payments JOIN Editors ON Payments.person_id=Editors.person_id " +
+					"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
 			
-			System.out.println(" MONTH(Payments.date) | SUM(amount)");
-			while (result.next()) {
-				System.out.println(result.getInt("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void totalPaymentsEditorsPerWorkType() {
+	public static void totalPaymentsAuthorsPerTimePeriod(int year, int month) {
 		try {
-			result = statement
-					.executeQuery("SELECT Editors.type, SUM(amount) FROM Payments INNER JOIN Editors ON Payments.person_id=Editors.person_id GROUP BY Editors.type;");
+			result = statement.executeQuery(String.format("SELECT CONCAT(YEAR(date), '-', MONTH(date)) AS month, SUM(amount) AS total_salary " +
+					"FROM Payments JOIN Authors ON Payments.person_id=Authors.person_id " +
+					"WHERE Payments.type='salary' AND MONTH(Payments.date)=%d AND YEAR(Payments.date)=%d;", month, year));
 			
-			System.out.println(" type | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getString("Editors.type") + " | " + result.getFloat("SUM(amount)"));	
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void totalPaymentsAuthorsPerTimePeriod() {
-		try {
-			result = statement
-					.executeQuery("SELECT MONTH(Payments.date), SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY MONTH(Payments.date);");
-			
-			System.out.println(" MONTH(Payments.date) | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getString("MONTH(Payments.date)") + " | " + result.getFloat("SUM(amount)"));	
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void totalPaymentsAuthorsPerWorkType() {
-		try {
-			result = statement
-					.executeQuery("SELECT Authors.type, SUM(amount) FROM Payments, Authors WHERE Payments.person_id=Authors.person_id GROUP BY Authors.type;");
-			
-			System.out.println(" type | SUM(amount) ");
-			while (result.next()) {
-				System.out.println(result.getString("Authors.type") + " | " + result.getFloat("SUM(amount)"));	
-			}
+			printResultSet(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

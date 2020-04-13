@@ -53,9 +53,9 @@ INSERT INTO Editor_edit_Publications (person_id, pub_id) VALUES
 	(3002, 1002);
 
 INSERT INTO Orders (order_id, num_of_copy, order_date, delivery_date, price, shipping_cost, person_id, pub_id) VALUES
-	(4001, 30, '2020-01-02', '2020-01-15', 20.00, 30.00, 2001, 1001),
-	(4002, 10, '2020-02-05', '2020-02-15', 20.00, 15.00, 2001, 1001),
-	(4003, 10, '2020-02-10', '2020-02-25', 10.00, 15.00, 2002, 1003);
+	(4001, 30, '2020-01-02', '2020-01-15', 600.00, 30.00, 2001, 1001),
+	(4002, 10, '2020-02-05', '2020-02-15', 200.00, 15.00, 2001, 1001),
+	(4003, 10, '2020-02-10', '2020-02-25', 100.00, 15.00, 2002, 1003);
 
 INSERT INTO Payments (pay_id, date, type, amount, person_id) VALUES
 	(NULL, '2020-04-01', 'salary', -1000.00, 3001),
